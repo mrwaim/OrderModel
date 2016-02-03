@@ -32,12 +32,12 @@ class ProductPricing extends Model
 
     public function product()
     {
-        return $this->belongsTo('App\Models\Product');
+        return $this->belongsTo(Product::class);
     }
 
     public function role()
     {
-        return $this->belongsTo('Klsandbox\RoleModel\Role');
+        return $this->belongsTo(\Klsandbox\RoleModel\Role::class);
     }
 
     public static function RestockPricingId()

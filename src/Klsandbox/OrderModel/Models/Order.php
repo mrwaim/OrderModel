@@ -80,17 +80,17 @@ class Order extends Model
 
     public function productPricing()
     {
-        return $this->belongsTo('App\Models\ProductPricing');
+        return $this->belongsTo(ProductPricing::class);
     }
 
     public function orderStatus()
     {
-        return $this->belongsTo('Klsandbox\OrderModel\Models\OrderStatus');
+        return $this->belongsTo(OrderStatus::class);
     }
 
     public function proofOfTransfer()
     {
-        return $this->belongsTo('App\Models\ProofOfTransfer');
+        return $this->belongsTo(ProofOfTransfer::class);
     }
 
     public function isApproved()
