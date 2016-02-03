@@ -31,4 +31,13 @@ class OrderModelServiceProvider extends ServiceProvider {
 		return [];
 	}
 
+    public function boot() {
+        $this->publishes([
+            __DIR__ . '/../../../database/migrations/' => database_path('/migrations')
+                ], 'migrations');
+                
+        $this->publishes([
+            __DIR__ . '/../../../config/' => config_path()
+                ], 'config');
+	}
 }

@@ -9,12 +9,21 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "5.0.*"
+        "illuminate/support": "5.0.*",
+        "klsandbox/site-model": "~0.5",
+        "klsandbox/role-model": "*",
+        "klsandbox/random-helper": "*"
     },
     "autoload": {
         "psr-0": {
             "Klsandbox\\OrderModel": "src/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://satis.klsandbox.com/"
+        }
+    ]
 }
