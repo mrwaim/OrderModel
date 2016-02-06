@@ -18,8 +18,8 @@ class UpdateOrdersRejectedAt extends Migration {
 			$table->integer('rejected_by_id')->unsigned()->nullable();
 			$table->foreign('rejected_by_id')->references('id')->on('users');
 
-			$table->integer('accepted_by_id')->unsigned()->nullable();
-			$table->foreign('accepted_by_id')->references('id')->on('users');
+			$table->integer('approved_by_id')->unsigned()->nullable();
+			$table->foreign('approved_by_id')->references('id')->on('users');
 		});
 	}
 
