@@ -59,7 +59,7 @@ class Order extends Model
             return true;
         });
 
-        Order::created(function (Order $order) {
+        self::created(function (Order $order) {
             App::make(OrderManager::class)->orderCreated($order);
         });
     }
