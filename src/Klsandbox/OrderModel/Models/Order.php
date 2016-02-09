@@ -2,10 +2,10 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\OrderModel\Services\OrderManager;
-use Auth;
-use App;
 
 /**
  * Klsandbox\OrderModel\Models\Order
@@ -114,6 +114,32 @@ class Order extends Model
             $q->where('order_status_id', '=', OrderStatus::FirstOrder()->id)
                 ->orWhere('order_status_id', '=', OrderStatus::NewOrderStatus()->id)
                 ->orWhere('order_status_id', '=', OrderStatus::PaymentUploaded()->id);
+        });
+    }
+
+    /**
+     * Returns the order that has status = approved.
+     *
+     * @param $query
+     * @return mixed
+     */
+    public static function whereNotFulfilled($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('order_status_id', '=', OrderStatus::Approved()->id);
+        });
+    }
+
+    /**
+     * Returns the order that has status = shipped.
+     *
+     * @param $query
+     * @return mixed
+     */
+    public static function whereFulfilled($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('order_status_id', '=', OrderStatus::Shipped()->id);
         });
     }
 }
