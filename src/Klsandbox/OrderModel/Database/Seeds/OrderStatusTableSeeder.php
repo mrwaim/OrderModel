@@ -8,46 +8,24 @@ use Klsandbox\OrderModel\Models\OrderStatus;
 
 class OrderStatusTableSeeder extends Seeder {
 
-    public function run() {
-        if (OrderStatus::all()->count() > 0) {
-            return;
+    public function createIfNotExists($name)
+    {
+        $item = OrderStatus::firstOrNew(['name' => $name]);
+        if (!$item->id)
+        {
+            $item->save();
         }
+    }
 
-        //DB::table('order_statuses')->delete();
-        // StatusSeed
-        OrderStatus::create(array(
-            'name' => 'FirstOrder'
-        ));
-
-        // StatusSeed
-        OrderStatus::create(array(
-            'name' => 'New'
-        ));
-
-        // StatusSeed
-        OrderStatus::create(array(
-            'name' => 'Payment_Uploaded'
-        ));
-
-        // StatusSeed
-        OrderStatus::create(array(
-            'name' => 'Approved'
-        ));
-
-        // StatusSeed
-        OrderStatus::create(array(
-            'name' => 'Shipped'
-        ));
-
-        // StatusSeed
-        OrderStatus::create(array(
-            'name' => 'Rejected'
-        ));
-
-        // StatusSeed
-        OrderStatus::create(array(
-            'name' => 'Received'
-        ));
+    public function run() {
+        $this->createIfNotExists('FirstOrder');
+        $this->createIfNotExists('New');
+        $this->createIfNotExists('Payment_Uploaded');
+        $this->createIfNotExists('Approved');
+        $this->createIfNotExists('Shipped');
+        $this->createIfNotExists('Rejected');
+        $this->createIfNotExists('Received');
+        $this->createIfNotExists('Draft');
     }
 
 }
