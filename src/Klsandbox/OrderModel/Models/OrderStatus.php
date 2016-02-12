@@ -57,4 +57,9 @@ class OrderStatus extends Model
         return OrderStatus::firstByAttributes(['name' => 'Received']);
     }
 
+    public static function Draft()
+    {
+        return OrderStatus::firstByAttributes(['name' => 'Draft']);
+    }
+
 }
