@@ -9,10 +9,9 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "5.0.*",
-        "klsandbox/site-model": "~0.5",
-        "klsandbox/role-model": "*",
-        "klsandbox/random-helper": "*"
+        "klsandbox/site-model": "dev-master"
+        "klsandbox/role-model": "dev-master",
+        "klsandbox/random-helper": "dev-master"
     },
     "autoload": {
         "psr-0": {
