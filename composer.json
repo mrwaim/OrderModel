@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "klsandbox/site-model": "dev-master"
+        "klsandbox/site-model": "dev-master",
         "klsandbox/role-model": "dev-master",
         "klsandbox/random-helper": "dev-master"
     },
