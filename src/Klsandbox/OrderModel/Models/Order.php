@@ -56,6 +56,10 @@ class Order extends Model
                 App::abort(500, 'invalid price');
             }
 
+            if (!$item->order_status_id) {
+                App::abort(500, 'invalid order_status_id');
+            }
+
             return true;
         });
 
