@@ -34,7 +34,7 @@ class ProductTableSeeder extends Seeder {
         $productPricing1Stockist = ProductPricing::create([
                     'role_id' => Role::Stockist()->id,
                     'product_id' => $product1->id,
-                    'price' => env('RESTOCK_PRICE'),
+                    'price' => config('order.restock_price'),
         ]);
     }
 
