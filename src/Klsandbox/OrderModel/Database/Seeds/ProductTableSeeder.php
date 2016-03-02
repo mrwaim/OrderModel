@@ -12,10 +12,6 @@ use Klsandbox\SiteModel\Site;
 class ProductTableSeeder extends Seeder {
 
     public function run() {
-        if (Product::all()->count() > 0) {
-            return;
-        }
-
         foreach (Site::all() as $site) {
             Site::setSite($site);
             $this->runForSite($site->id);
@@ -23,6 +19,12 @@ class ProductTableSeeder extends Seeder {
     }
     
     public function runForSite($siteId) {
+        $match = Product::forSite()->where('name', '=', 'Restock')->get();
+        if (count($match) > 0)
+        {
+            return;
+        }
+
         $product1 = Product::create(array(
                     'name' => 'Restock',
                     'description' => 'Restock',
