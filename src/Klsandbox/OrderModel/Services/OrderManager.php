@@ -10,4 +10,8 @@ interface OrderManager
     function rejectOrder(Order $order);
     function shipOrder(Order $order, $trackingId);
     function orderCreated(Order $order);
+    function cancelOrder(Order $order);
+    function createFirstOrder($productPricingId, $proofOfTransfer, $paymentMode, $amount);
+    function createRestockOrder($proofOfTransfer, $product_pricing_id, $paymentMode, $amount, $draft);
+    function setPaymentUploaded($order);
 }
