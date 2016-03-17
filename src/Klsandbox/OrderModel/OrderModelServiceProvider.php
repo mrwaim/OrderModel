@@ -39,5 +39,17 @@ class OrderModelServiceProvider extends ServiceProvider {
         $this->publishes([
             __DIR__ . '/../../../config/' => config_path()
                 ], 'config');
+
+		\Blade::extend(function ($view, $compiler) {
+			$pattern = "/(?<!\w)(\s*)@olink\(\s*(.*?)\)/";
+			return preg_replace($pattern, '$1'
+				. '<?php if($auth->admin || $auth->staff || $auth->id == $2->user_id || $auth->id == $2->user->referral_id) {?>' . PHP_EOL
+				. '<a href="/order-management/view/<?php echo $2->id ?>">' . PHP_EOL
+				. '#<?php echo (1024 + $2->id) ?>' . PHP_EOL
+				. '</a>' . PHP_EOL
+				. '<?php } else { ?>' . PHP_EOL
+				. '<?php echo (1024 + $2->id) ?>' . PHP_EOL
+				. '<?php }?>', $view);
+		});
 	}
 }
