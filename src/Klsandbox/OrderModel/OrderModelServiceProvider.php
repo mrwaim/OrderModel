@@ -1,6 +1,7 @@
 <?php namespace Klsandbox\OrderModel;
 
 use Illuminate\Support\ServiceProvider;
+use Klsandbox\SiteConfig\Services\SiteConfig;
 
 class OrderModelServiceProvider extends ServiceProvider {
 
@@ -50,6 +51,10 @@ class OrderModelServiceProvider extends ServiceProvider {
 				. '<?php } else { ?>' . PHP_EOL
 				. '<?php echo (1024 + $2->id) ?>' . PHP_EOL
 				. '<?php }?>', $view);
+		});
+
+		SiteConfig::macro('show_products', function () {
+			return config('order.show_products');
 		});
 	}
 }
