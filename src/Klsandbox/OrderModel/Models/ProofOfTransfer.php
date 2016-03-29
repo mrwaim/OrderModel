@@ -63,6 +63,7 @@ class ProofOfTransfer extends Model
         $proofOfTransfers->amount = Input::get('amount');
         $proofOfTransfers->user_id = Auth::user()->id;
         $proofOfTransfers->notes = Input::get('notes');
+        $proofOfTransfers->order_notes = Input::get('order_notes');
         $proofOfTransfers->receiver_user_id = Auth::user()->referral_id;
 
         if ($fileName) {
