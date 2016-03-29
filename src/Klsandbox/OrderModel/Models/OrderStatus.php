@@ -24,42 +24,42 @@ class OrderStatus extends Model
 
     public static function FirstOrder()
     {
-        return OrderStatus::firstByAttributes(['name' => 'FirstOrder']);
+        return OrderStatus::where(['name' => 'FirstOrder'])->first();
     }
 
     public static function NewOrderStatus()
     {
-        return OrderStatus::firstByAttributes(['name' => 'New']);
+        return OrderStatus::where(['name' => 'New'])->first();
     }
 
     public static function PaymentUploaded()
     {
-        return OrderStatus::firstByAttributes(['name' => 'Payment_Uploaded']);
+        return OrderStatus::where(['name' => 'Payment_Uploaded'])->first();
     }
 
     public static function Approved()
     {
-        return OrderStatus::firstByAttributes(['name' => 'Approved']);
+        return OrderStatus::where(['name' => 'Approved'])->first();
     }
 
     public static function Rejected()
     {
-        return OrderStatus::firstByAttributes(['name' => 'Rejected']);
+        return OrderStatus::where(['name' => 'Rejected'])->first();
     }
 
     public static function Shipped()
     {
-        return OrderStatus::firstByAttributes(['name' => 'Shipped']);
+        return OrderStatus::where(['name' => 'Shipped'])->first();
     }
 
     public static function Received()
     {
-        return OrderStatus::firstByAttributes(['name' => 'Received']);
+        return OrderStatus::where(['name' => 'Received'])->first();
     }
 
     public static function Draft()
     {
-        return OrderStatus::firstByAttributes(['name' => 'Draft']);
+        return OrderStatus::where(['name' => 'Draft'])->first();
     }
 
 }
