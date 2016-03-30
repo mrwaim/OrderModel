@@ -36,6 +36,11 @@ class Product extends Model
     protected $table = 'products';
     public $timestamps = true;
 
+    public function productPricing()
+    {
+        return $this->hasOne(ProductPricing::class);
+    }
+
     public static function RestockId()
     {
         return Product::forSite()->where('name', '=', 'Restock')->first()->id;
@@ -43,27 +48,44 @@ class Product extends Model
 
     public static function OtherPricingId()
     {
-        return self::where('name', 'Other')
-            ->select('product_pricings.id as product_pricing_id')
-            ->leftJoin('product_pricings', 'products.id', '=', 'product_pricings.product_id')
-            ->first()->product_pricing_id;
+        return self::forSite()
+            ->where('name', 'Other')
+            ->first()
+            ->productPricing
+            ->id;
     }
 
-    public static function getList()
+    public static function getList($user = null)
     {
-        $q = self::where('products.site_id', '=', Site::id())
-            ->where('products.is_available', true);
+        $q = self::forSite()
+            ->where('products.is_available', true)
+            ->with('productPricing');
 
-        $q = $q->select(
-            'products.id',
-            'products.name',
-            'products.description',
-            'product_pricings.price',
-            'product_pricings.id as product_pricing_id'
-        )
-            ->leftJoin('product_pricings', 'products.id', '=', 'product_pricings.product_id');
+        $list = $q->get();
 
-        return $q->get();
+        if ($user)
+        {
+            $userGroups = $user->groups()->get()->pluck('id')->all();
+
+            $list = $list->filter(function (Product $e) use ($userGroups) {
+                if ($e->productPricing->groups->count() == 0)
+                {
+                    return true;
+                }
+
+                foreach ($e->productPricing->groups as $group)
+                {
+                    if (in_array($group->id, $userGroups))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+        }
+
+        return $list;
     }
 
     public function createNew($input)
@@ -84,6 +106,11 @@ class Product extends Model
         $product_price->price = $input['price'];
         $product_price->site_id = Site::id();
         $product_price->save();
+
+        if ($input['group_id'] && $input['group_id'] > 0)
+        {
+            $product_price->groups()->attach($input['group_id']);
+        }
     }
 
     public function setUnavailable($id)

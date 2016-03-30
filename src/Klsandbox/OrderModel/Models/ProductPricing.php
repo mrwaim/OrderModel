@@ -45,4 +45,8 @@ class ProductPricing extends Model
         return ProductPricing::where('product_id', '=', Product::RestockId())->first()->id;
     }
 
+    public function groups()
+    {
+        return $this->belongsToMany(\App\Models\Group::class, 'group_product_pricing');
+    }
 }
