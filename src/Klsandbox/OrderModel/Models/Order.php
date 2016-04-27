@@ -52,10 +52,6 @@ class Order extends Model
         self::creating(function (Order $item) {
             $item->user_id = Auth::user()->id;
 
-            if ($item->price <= 0) {
-                App::abort(500, 'invalid price');
-            }
-
             if (!$item->order_status_id) {
                 App::abort(500, 'invalid order_status_id');
             }
@@ -70,11 +66,11 @@ class Order extends Model
 
     protected $table = 'orders';
     public $timestamps = true;
-    protected $fillable = ['created_at', 'updated_at', 'tracking_id', 'order_status_id', 'product_pricing_id', 'proof_of_transfer_id', 'payment_mode', 'price'];
+    protected $fillable = ['created_at', 'updated_at', 'tracking_id', 'order_status_id', 'product_pricing_id', 'proof_of_transfer_id'];
 
     public function bonuses()
     {
-        return $this->hasMany(config('bonus.bonus_model'));
+        return $this->hasManyThrough(config('bonus.bonus_model'), OrderItem::class);
     }
 
     public function user()
@@ -82,6 +78,7 @@ class Order extends Model
         return $this->belongsTo(config('auth.model'));
     }
 
+    // Deprecated
     public function productPricing()
     {
         return $this->belongsTo(ProductPricing::class);
@@ -95,6 +92,11 @@ class Order extends Model
     public function proofOfTransfer()
     {
         return $this->belongsTo(ProofOfTransfer::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 
     public function isApproved()

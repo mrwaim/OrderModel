@@ -30,6 +30,7 @@ use Klsandbox\SiteModel\Site;
  */
 class Product extends Model
 {
+    protected $fillable = ['name', 'image', 'description'];
 
     use \Klsandbox\SiteModel\SiteExtensions;
 
@@ -39,6 +40,11 @@ class Product extends Model
     public function productPricing()
     {
         return $this->hasOne(ProductPricing::class);
+    }
+
+    public function isOtherProduct()
+    {
+        return $this->name == 'Other';
     }
 
     public static function RestockId()
@@ -97,6 +103,7 @@ class Product extends Model
         $product->is_available = true;
         $product->hidden_from_ordering = false;
         $product->site_id = Site::id();
+        $product->image = $input['image'];
         $product->save();
 
         $product_price = new ProductPricing();

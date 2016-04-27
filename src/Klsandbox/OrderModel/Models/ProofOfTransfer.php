@@ -4,6 +4,7 @@ namespace Klsandbox\OrderModel\Models;
 
 use Auth;
 use Input;
+use Klsandbox\BillplzRoute\Models\BillplzResponse;
 use Request;
 use Log;
 use Illuminate\Database\Eloquent\Model;
@@ -38,7 +39,7 @@ class ProofOfTransfer extends Model
 
     protected $table = 'proof_of_transfers';
     public $timestamps = true;
-    protected $fillable = ['bank_name', 'image', 'amount', 'user_id', 'receiver_user_id', 'notes'];
+    protected $fillable = ['bank_name', 'image', 'amount', 'user_id', 'receiver_user_id', 'notes', 'payment_mode'];
 
     public static function createFromInput()
     {
@@ -59,12 +60,24 @@ class ProofOfTransfer extends Model
         }
 
         $proofOfTransfers = new ProofOfTransfer();
-        $proofOfTransfers->bank_name = Input::get('bank_name');
-        $proofOfTransfers->amount = Input::get('amount');
+
+        $proofOfTransfers->payment_mode = Input::get('payment_mode');
+
+        if ($proofOfTransfers->payment_mode == 'BankTransfer')
+        {
+            $proofOfTransfers->bank_name = Input::get('bank_name');
+        }
+        else
+        {
+            $proofOfTransfers->bank_name = $proofOfTransfers->payment_mode;
+        }
+
+        $proofOfTransfers->amount = array_sum(Input::get('amount'));
         $proofOfTransfers->user_id = Auth::user()->id;
         $proofOfTransfers->notes = Input::get('notes');
         $proofOfTransfers->order_notes = Input::get('order_notes');
         $proofOfTransfers->receiver_user_id = Auth::user()->referral_id;
+
 
         if ($fileName) {
             $proofOfTransfers->image = "img/user/$fileName";
@@ -75,4 +88,13 @@ class ProofOfTransfer extends Model
         return $proofOfTransfers;
     }
 
+    public function billplzResponses()
+    {
+        return $this->hasMany(BillplzResponse::class, 'metadata_proof_of_transfer_id');
+    }
+
+    public function order()
+    {
+        return $this->hasOne(config('order.order_model'));
+    }
 }
