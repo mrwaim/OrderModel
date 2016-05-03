@@ -56,5 +56,17 @@ class OrderModelServiceProvider extends ServiceProvider {
 		SiteConfig::macro('show_products', function () {
 			return config('order.show_products');
 		});
+
+		SiteConfig::macro('allow_multiple_products', function () {
+			return config('order.allow_multiple_products');
+		});
+
+		SiteConfig::macro('allow_quantity', function () {
+			return config('order.allow_quantity');
+		});
+
+		SiteConfig::macro('allow_other_product', function () {
+			return config('order.allow_other_product');
+		});
 	}
 }
