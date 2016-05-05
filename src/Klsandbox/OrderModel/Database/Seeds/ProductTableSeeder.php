@@ -3,6 +3,7 @@
 namespace Klsandbox\OrderModel\Database\Seeds;
 
 
+use App\Models\BonusCategory;
 use Illuminate\Database\Seeder;
 use Klsandbox\RoleModel\Role;
 use Klsandbox\OrderModel\Models\Product;
@@ -31,6 +32,7 @@ class ProductTableSeeder extends Seeder {
                     'image' => null,
                     'is_available' => true,
                     'hidden_from_ordering' => false,
+                    'bonus_categories_id' => \App\Models\BonusCategory::forSite()->first()->id,
         ));
 
         $productPricing1Stockist = ProductPricing::create([

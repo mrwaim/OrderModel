@@ -2,6 +2,7 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App\Models\BonusCategory;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\RoleModel\Role;
 use Klsandbox\SiteModel\Site;
@@ -30,7 +31,7 @@ use Klsandbox\SiteModel\Site;
  */
 class Product extends Model
 {
-    protected $fillable = ['name', 'image', 'description'];
+    protected $fillable = ['name', 'image', 'description', 'bonus_categories_id'];
 
     use \Klsandbox\SiteModel\SiteExtensions;
 
@@ -52,6 +53,11 @@ class Product extends Model
         return Product::forSite()->where('name', '=', 'Restock')->first()->id;
     }
 
+    public function bonusCategory()
+    {
+        return $this->belongsTo(BonusCategory::class, 'bonus_categories_id');
+    }
+
     public static function OtherPricingId()
     {
         return self::forSite()
@@ -65,7 +71,8 @@ class Product extends Model
     {
         $q = self::forSite()
             ->where('products.is_available', true)
-            ->with('productPricing');
+            ->with('productPricing')
+            ->with('bonusCategory');
 
         $list = $q->get();
 
@@ -104,6 +111,7 @@ class Product extends Model
         $product->hidden_from_ordering = false;
         $product->site_id = Site::id();
         $product->image = $input['image'];
+        $product->bonus_categories_id = $input['bonus_categories_id'];
         $product->save();
 
         $product_price = new ProductPricing();
