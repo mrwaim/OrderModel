@@ -38,6 +38,7 @@ class Product extends Model
     protected $table = 'products';
     public $timestamps = true;
 
+    // Relation
     public function productPricing()
     {
         if(! config('group.enabled')){
@@ -105,6 +106,13 @@ class Product extends Model
         return $list;
     }
 
+    // Model
+
+    /**
+     * create new product when group is disabled
+     *
+     * @param array $input
+     */
     public function createProductGroupDisabled(array $input)
     {
         $product = new Product();
@@ -126,7 +134,73 @@ class Product extends Model
         $product_price->save();
     }
 
-    public function createNew($input)
+    /**
+     * create new product when group is disabled
+     *
+     * @param array $input
+     */
+    public function createProductGroupEnabled(array $input)
+    {
+
+        $product = new Product();
+
+        $product->name = $input['name'];
+        $product->description = $input['description'];
+        $product->is_available = true;
+        $product->hidden_from_ordering = false;
+        $product->site_id = Site::id();
+        $product->image = $input['image'];
+        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->save();
+
+        foreach($input['groups'] as $group){
+
+            if($group['price']){
+                $product_price = new ProductPricing();
+
+                $product_price->role_id = Role::Stockist()->id;
+                $product_price->product_id = $product->id;
+                $product_price->price = $group['price'];
+                $product_price->site_id = Site::id();
+                $product_price->save();
+
+                if ($group['group_id'] && $group['group_id'] > 0)
+                {
+                    $product_price->groups()->attach($group['group_id']);
+                }
+            }
+
+        }
+    }
+
+    /**
+     * update existing product when group is disabled
+     *
+     * @param Product $product
+     * @param array $input
+     */
+    public function updateProductGroupDisabled(Product $product, array $input)
+    {
+
+        $product->name = $input['name'];
+        $product->description = $input['description'];
+
+        isset($input['image']) ? $product->image = $input['image'] : '';
+
+        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->save();
+
+        $product->productPricing()->update([
+            'price' => $input['price']
+        ]);
+    }
+
+    /**
+     * update existing product when group is disabled
+     *
+     * @param array $input
+     */
+    public function updateProductGroupEnabled(array $input)
     {
 
         $product = new Product();
