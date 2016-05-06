@@ -55,7 +55,7 @@ class Product extends Model
 
     public function bonusCategory()
     {
-        return $this->belongsTo(BonusCategory::class, 'bonus_categories_id');
+        return $this->belongsTo(BonusCategory::class);
     }
 
     public static function OtherPricingId()
@@ -111,20 +111,26 @@ class Product extends Model
         $product->hidden_from_ordering = false;
         $product->site_id = Site::id();
         $product->image = $input['image'];
-        $product->bonus_categories_id = $input['bonus_categories_id'];
+        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->save();
 
-        $product_price = new ProductPricing();
+        foreach($input['groups'] as $group){
 
-        $product_price->role_id = Role::Stockist()->id;
-        $product_price->product_id = $product->id;
-        $product_price->price = $input['price'];
-        $product_price->site_id = Site::id();
-        $product_price->save();
+            if($group['price']){
+                $product_price = new ProductPricing();
 
-        if ($input['group_id'] && $input['group_id'] > 0)
-        {
-            $product_price->groups()->attach($input['group_id']);
+                $product_price->role_id = Role::Stockist()->id;
+                $product_price->product_id = $product->id;
+                $product_price->price = $group['price'];
+                $product_price->site_id = Site::id();
+                $product_price->save();
+
+                if ($group['group_id'] && $group['group_id'] > 0)
+                {
+                    $product_price->groups()->attach($group['group_id']);
+                }
+            }
+
         }
     }
 
