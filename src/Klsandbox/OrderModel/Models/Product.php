@@ -40,7 +40,11 @@ class Product extends Model
 
     public function productPricing()
     {
-        return $this->hasOne(ProductPricing::class);
+        if(! config('group.enabled')){
+            return $this->hasOne(ProductPricing::class);
+        }
+
+        return $this->hasMany(ProductPricing::class);
     }
 
     public function isOtherProduct()
@@ -101,8 +105,30 @@ class Product extends Model
         return $list;
     }
 
+    public function createProductGroupDisabled(array $input)
+    {
+        $product = new Product();
+
+        $product->name = $input['name'];
+        $product->description = $input['description'];
+        $product->is_available = true;
+        $product->hidden_from_ordering = false;
+        $product->site_id = Site::id();
+        $product->image = $input['image'];
+        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->save();
+
+        $product_price = new ProductPricing();
+        $product_price->role_id = Role::Stockist()->id;
+        $product_price->product_id = $product->id;
+        $product_price->price = $input['price'];
+        $product_price->site_id = Site::id();
+        $product_price->save();
+    }
+
     public function createNew($input)
     {
+
         $product = new Product();
 
         $product->name = $input['name'];
@@ -132,6 +158,27 @@ class Product extends Model
             }
 
         }
+    }
+
+    public function updateProduct($input)
+    {
+
+        $productPricing->price = $inputs['price'];
+        $productPricing->save();
+
+        if ($inputs['group_id'])
+        {
+            $productPricing->groups()->sync([$inputs['group_id']]);
+        }
+        else
+        {
+            $productPricing->groups()->sync([]);
+        }
+
+        $inputs = array_except($inputs, ['group_id', 'price', '_token']);
+
+        $productPricing->product->update($inputs);
+
     }
 
     public function setUnavailable($id)
