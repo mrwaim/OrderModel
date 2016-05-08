@@ -154,22 +154,13 @@ class Product extends Model
         $product->save();
 
         foreach($input['groups'] as $group){
-
-            if($group['price']){
-                $product_price = new ProductPricing();
-
-                $product_price->role_id = Role::Stockist()->id;
-                $product_price->product_id = $product->id;
-                $product_price->price = $group['price'];
-                $product_price->site_id = Site::id();
-                $product_price->save();
-
-                if ($group['group_id'] && $group['group_id'] > 0)
-                {
-                    $product_price->groups()->attach($group['group_id']);
-                }
-            }
-
+            $product_price = new ProductPricing();
+            $product_price->role_id = Role::Stockist()->id;
+            $product_price->product_id = $product->id;
+            $product_price->price = isset($group['price']) ? $group['price'] : 0;
+            $product_price->site_id = Site::id();
+            $product_price->save();
+            $product_price->groups()->attach($group['group_id']);
         }
     }
 
@@ -200,37 +191,19 @@ class Product extends Model
      *
      * @param array $input
      */
-    public function updateProductGroupEnabled(array $input)
+    public function updateProductGroupEnabled(Product $product, array $input)
     {
-
-        $product = new Product();
-
         $product->name = $input['name'];
         $product->description = $input['description'];
-        $product->is_available = true;
-        $product->hidden_from_ordering = false;
-        $product->site_id = Site::id();
-        $product->image = $input['image'];
+        isset($input['image']) ? $product->image = $input['image'] : '';
         $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->save();
 
         foreach($input['groups'] as $group){
-
-            if($group['price']){
-                $product_price = new ProductPricing();
-
-                $product_price->role_id = Role::Stockist()->id;
-                $product_price->product_id = $product->id;
-                $product_price->price = $group['price'];
-                $product_price->site_id = Site::id();
-                $product_price->save();
-
-                if ($group['group_id'] && $group['group_id'] > 0)
-                {
-                    $product_price->groups()->attach($group['group_id']);
-                }
-            }
-
+            $productPricing = ProductPricing::find($group['product_pricing_id']);
+            $productPricing->update([
+                'price' => isset($group['price']) ? $group['price'] : 0,
+            ]);
         }
     }
 
