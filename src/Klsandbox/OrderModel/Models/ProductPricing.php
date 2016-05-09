@@ -30,6 +30,15 @@ class ProductPricing extends Model
     protected $table = 'product_pricings';
     public $timestamps = true;
 
+    /**
+     * Attributes that are mass assignable
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'price'
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);

@@ -2,6 +2,7 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App\Models\BonusCategory;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\RoleModel\Role;
 use Klsandbox\SiteModel\Site;
@@ -30,16 +31,21 @@ use Klsandbox\SiteModel\Site;
  */
 class Product extends Model
 {
-    protected $fillable = ['name', 'image', 'description'];
+    protected $fillable = ['name', 'image', 'description', 'bonus_categories_id'];
 
     use \Klsandbox\SiteModel\SiteExtensions;
 
     protected $table = 'products';
     public $timestamps = true;
 
+    // Relation
     public function productPricing()
     {
-        return $this->hasOne(ProductPricing::class);
+        if(! config('group.enabled')){
+            return $this->hasOne(ProductPricing::class);
+        }
+
+        return $this->hasMany(ProductPricing::class);
     }
 
     public function isOtherProduct()
@@ -50,6 +56,11 @@ class Product extends Model
     public static function RestockId()
     {
         return Product::forSite()->where('name', '=', 'Restock')->first()->id;
+    }
+
+    public function bonusCategory()
+    {
+        return $this->belongsTo(BonusCategory::class);
     }
 
     public static function OtherPricingId()
@@ -65,7 +76,8 @@ class Product extends Model
     {
         $q = self::forSite()
             ->where('products.is_available', true)
-            ->with('productPricing');
+            ->with('productPricing')
+            ->with('bonusCategory');
 
         $list = $q->get();
 
@@ -94,7 +106,14 @@ class Product extends Model
         return $list;
     }
 
-    public function createNew($input)
+    // Model
+
+    /**
+     * create new product when group is disabled
+     *
+     * @param array $input
+     */
+    public function createProductGroupDisabled(array $input)
     {
         $product = new Product();
 
@@ -104,20 +123,109 @@ class Product extends Model
         $product->hidden_from_ordering = false;
         $product->site_id = Site::id();
         $product->image = $input['image'];
+        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->save();
 
         $product_price = new ProductPricing();
-
         $product_price->role_id = Role::Stockist()->id;
         $product_price->product_id = $product->id;
         $product_price->price = $input['price'];
         $product_price->site_id = Site::id();
         $product_price->save();
+    }
 
-        if ($input['group_id'] && $input['group_id'] > 0)
-        {
-            $product_price->groups()->attach($input['group_id']);
+    /**
+     * create new product when group is disabled
+     *
+     * @param array $input
+     */
+    public function createProductGroupEnabled(array $input)
+    {
+
+        $product = new Product();
+
+        $product->name = $input['name'];
+        $product->description = $input['description'];
+        $product->is_available = true;
+        $product->hidden_from_ordering = false;
+        $product->site_id = Site::id();
+        $product->image = $input['image'];
+        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->save();
+
+        foreach($input['groups'] as $group){
+            $product_price = new ProductPricing();
+            $product_price->role_id = Role::Stockist()->id;
+            $product_price->product_id = $product->id;
+            $product_price->price = isset($group['price']) ? $group['price'] : 0;
+            $product_price->site_id = Site::id();
+            $product_price->save();
+            $product_price->groups()->attach($group['group_id']);
         }
+    }
+
+    /**
+     * update existing product when group is disabled
+     *
+     * @param Product $product
+     * @param array $input
+     */
+    public function updateProductGroupDisabled(Product $product, array $input)
+    {
+
+        $product->name = $input['name'];
+        $product->description = $input['description'];
+
+        isset($input['image']) ? $product->image = $input['image'] : '';
+
+        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->save();
+
+        $product->productPricing()->update([
+            'price' => $input['price']
+        ]);
+    }
+
+    /**
+     * update existing product when group is disabled
+     *
+     * @param array $input
+     */
+    public function updateProductGroupEnabled(Product $product, array $input)
+    {
+        $product->name = $input['name'];
+        $product->description = $input['description'];
+        isset($input['image']) ? $product->image = $input['image'] : '';
+        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->save();
+
+        foreach($input['groups'] as $group){
+            $productPricing = ProductPricing::find($group['product_pricing_id']);
+            $productPricing->update([
+                'price' => isset($group['price']) ? $group['price'] : 0,
+            ]);
+        }
+    }
+
+    public function updateProduct($input)
+    {
+
+        $productPricing->price = $inputs['price'];
+        $productPricing->save();
+
+        if ($inputs['group_id'])
+        {
+            $productPricing->groups()->sync([$inputs['group_id']]);
+        }
+        else
+        {
+            $productPricing->groups()->sync([]);
+        }
+
+        $inputs = array_except($inputs, ['group_id', 'price', '_token']);
+
+        $productPricing->product->update($inputs);
+
     }
 
     public function setUnavailable($id)
