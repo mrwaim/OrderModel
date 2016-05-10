@@ -75,6 +75,11 @@ class ProductPricing extends Model
                 return false;
             }
 
+            if ($productPricing->price <= 0)
+            {
+                return false;
+            }
+
             foreach ($productPricing->groups as $group)
             {
                 if (in_array($group->id, $userGroups))
