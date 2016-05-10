@@ -3,9 +3,7 @@
 namespace Klsandbox\OrderModel\Models;
 
 use Auth;
-use Input;
 use Klsandbox\BillplzRoute\Models\BillplzResponse;
-use Request;
 use Log;
 use Illuminate\Database\Eloquent\Model;
 use App;
@@ -41,17 +39,16 @@ class ProofOfTransfer extends Model
     public $timestamps = true;
     protected $fillable = ['bank_name', 'image', 'amount', 'user_id', 'receiver_user_id', 'notes', 'payment_mode'];
 
-    public static function createFromInput()
+    public static function createFromInput(App\Http\Requests\OrderPostRequest $request)
     {
-
         $fileName = null;
         $newFileName = null;
-        if (Input::file('image')) {
-            $originalFileName = Input::file('image')->getClientOriginalName();
+        if ($request->file('image')) {
+            $originalFileName = $request->file('image')->getClientOriginalName();
 
             $fileName = "upload_" . Auth::user()->id . mt_rand() . "." . pathinfo($originalFileName, PATHINFO_EXTENSION);
 
-            $newFileName = Request::file('image')->move(public_path("img/user"), $fileName);
+            $newFileName = $request->file('image')->move(public_path("img/user"), $fileName);
             Log::info("Move " . $newFileName);
         }
 
@@ -61,21 +58,22 @@ class ProofOfTransfer extends Model
 
         $proofOfTransfers = new ProofOfTransfer();
 
-        $proofOfTransfers->payment_mode = Input::get('payment_mode');
+        $proofOfTransfers->payment_mode = $request->payment_mode;
 
         if ($proofOfTransfers->payment_mode == 'BankTransfer')
         {
-            $proofOfTransfers->bank_name = Input::get('bank_name');
+            $proofOfTransfers->bank_name = $request->bank_name;
         }
         else
         {
             $proofOfTransfers->bank_name = $proofOfTransfers->payment_mode;
         }
 
-        $proofOfTransfers->amount = array_sum(Input::get('amount'));
+        $proofOfTransfers->amount = $request->totalAmount();
+
         $proofOfTransfers->user_id = Auth::user()->id;
-        $proofOfTransfers->notes = Input::get('notes');
-        $proofOfTransfers->order_notes = Input::get('order_notes');
+        $proofOfTransfers->notes = $request->notes;
+        $proofOfTransfers->order_notes = $request->order_notes;
         $proofOfTransfers->receiver_user_id = Auth::user()->referral_id;
 
 

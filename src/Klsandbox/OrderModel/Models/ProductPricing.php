@@ -2,6 +2,7 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -26,8 +27,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ProductPricing extends Model
 {
-
-    protected $table = 'product_pricings';
     public $timestamps = true;
 
     /**
@@ -51,11 +50,45 @@ class ProductPricing extends Model
 
     public static function RestockPricingId()
     {
-        return ProductPricing::where('product_id', '=', Product::RestockId())->first()->id;
+        return ProductPricing::where('product_id', '=', Product::Restock()->id)->first()->id;
     }
 
     public function groups()
     {
         return $this->belongsToMany(\App\Models\Group::class, 'group_product_pricing');
+    }
+
+
+    public static function getAvailableProductPricingList(User $user)
+    {
+        $list = self::with('product', 'groups', 'product.bonusCategory')->get();
+
+        if(!config('group.enabled')) {
+            return $list;
+        }
+
+        $userGroups = $user->groups()->get()->pluck('id')->all();
+
+        $list = $list->filter(function ($productPricing) use ($userGroups) {
+            if (!$productPricing->product->is_available)
+            {
+                return false;
+            }
+
+            foreach ($productPricing->groups as $group)
+            {
+                if (in_array($group->id, $userGroups))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        $list = $list->all();
+        $list = array_values($list);
+
+        return $list;
     }
 }

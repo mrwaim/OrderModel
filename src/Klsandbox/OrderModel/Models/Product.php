@@ -3,6 +3,7 @@
 namespace Klsandbox\OrderModel\Models;
 
 use App\Models\BonusCategory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\RoleModel\Role;
 use Klsandbox\SiteModel\Site;
@@ -53,9 +54,9 @@ class Product extends Model
         return $this->name == 'Other';
     }
 
-    public static function RestockId()
+    public static function Restock()
     {
-        return Product::forSite()->where('name', '=', 'Restock')->first()->id;
+        return Product::forSite()->where('name', '=', 'Restock')->first();
     }
 
     public function bonusCategory()
@@ -72,38 +73,13 @@ class Product extends Model
             ->id;
     }
 
-    public static function getList($user = null)
+    public static function getAvailableProductList()
     {
-        $q = self::forSite()
+        return self::forSite()
             ->where('products.is_available', true)
             ->with('productPricing')
-            ->with('bonusCategory');
-
-        $list = $q->get();
-
-        if ($user)
-        {
-            $userGroups = $user->groups()->get()->pluck('id')->all();
-
-            $list = $list->filter(function (Product $e) use ($userGroups) {
-                if ($e->productPricing->groups->count() == 0)
-                {
-                    return true;
-                }
-
-                foreach ($e->productPricing->groups as $group)
-                {
-                    if (in_array($group->id, $userGroups))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            });
-        }
-
-        return $list;
+            ->with('bonusCategory')
+            ->get();
     }
 
     // Model
@@ -135,7 +111,7 @@ class Product extends Model
     }
 
     /**
-     * create new product when group is disabled
+     * create new product when group is enabled
      *
      * @param array $input
      */
@@ -160,7 +136,7 @@ class Product extends Model
             $product_price->price = isset($group['price']) ? $group['price'] : 0;
             $product_price->site_id = Site::id();
             $product_price->save();
-            $product_price->groups()->attach($group['group_id']);
+            $product_price->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
         }
     }
 
@@ -199,8 +175,23 @@ class Product extends Model
         $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->save();
 
-        foreach($input['groups'] as $group){
-            $productPricing = ProductPricing::find($group['product_pricing_id']);
+        foreach($input['groups'] as $group) {
+
+            $productPricing = null;
+            if (!$group['product_pricing_id'])
+            {
+                $productPricing = new ProductPricing();
+                $productPricing->role_id = Role::Stockist()->id;
+                $productPricing->product_id = $product->id;
+                $productPricing->site_id = Site::id();
+                $productPricing->save();
+                $productPricing->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
+            }
+            else
+            {
+                $productPricing = ProductPricing::find($group['product_pricing_id']);
+            }
+
             $productPricing->update([
                 'price' => isset($group['price']) ? $group['price'] : 0,
             ]);
@@ -233,5 +224,12 @@ class Product extends Model
         $product = Product::find($id);
         $product->is_available = false;
         $product->save();
+    }
+
+    public function pricingForGroup($group)
+    {
+        return $this->productPricing()->whereHas('groups', function ($query) use ($group) {
+            $query->where('group_product_pricing.group_id', '=', $group->id);
+        })->first();
     }
 }
