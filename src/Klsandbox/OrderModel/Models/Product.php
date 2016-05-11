@@ -205,9 +205,15 @@ class Product extends Model
             }else{
 
                 // if product pricing is existing in database, price is not defined or 0 then delete it
-                if(isset($group['product_pricing_id'])){
+                if(isset($group['product_pricing_id']) && $group['product_pricing_id'] > 0){
                     $productPricing = ProductPricing::find($group['product_pricing_id']);
-                    $product->delete();
+
+                    // check product pricing is exist
+                    if($productPricing){
+                        $productPricing->groups()->sync([]);
+                        $productPricing->delete();
+                    }
+
                 }
             }
         }
