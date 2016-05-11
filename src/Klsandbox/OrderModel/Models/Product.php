@@ -32,7 +32,7 @@ use Klsandbox\SiteModel\Site;
  */
 class Product extends Model
 {
-    protected $fillable = ['name', 'image', 'description', 'bonus_categories_id'];
+    protected $fillable = ['name', 'image', 'description', 'bonus_category_id'];
 
     use \Klsandbox\SiteModel\SiteExtensions;
 
@@ -99,7 +99,7 @@ class Product extends Model
         $product->hidden_from_ordering = false;
         $product->site_id = Site::id();
         $product->image = $input['image'];
-        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->save();
 
         $product_price = new ProductPricing();
@@ -126,17 +126,19 @@ class Product extends Model
         $product->hidden_from_ordering = false;
         $product->site_id = Site::id();
         $product->image = $input['image'];
-        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->save();
 
         foreach($input['groups'] as $group){
-            $product_price = new ProductPricing();
-            $product_price->role_id = Role::Stockist()->id;
-            $product_price->product_id = $product->id;
-            $product_price->price = isset($group['price']) ? $group['price'] : 0;
-            $product_price->site_id = Site::id();
-            $product_price->save();
-            $product_price->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
+            if(isset($group['price']) && $group['price'] > 0){
+                $product_price = new ProductPricing();
+                $product_price->role_id = Role::Stockist()->id;
+                $product_price->product_id = $product->id;
+                $product_price->price = $group['price'];
+                $product_price->site_id = Site::id();
+                $product_price->save();
+                $product_price->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
+            }
         }
     }
 
@@ -172,29 +174,42 @@ class Product extends Model
         $product->name = $input['name'];
         $product->description = $input['description'];
         isset($input['image']) ? $product->image = $input['image'] : '';
-        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->save();
 
         foreach($input['groups'] as $group) {
 
             $productPricing = null;
-            if (!$group['product_pricing_id'])
-            {
-                $productPricing = new ProductPricing();
-                $productPricing->role_id = Role::Stockist()->id;
-                $productPricing->product_id = $product->id;
-                $productPricing->site_id = Site::id();
-                $productPricing->save();
-                $productPricing->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
-            }
-            else
-            {
-                $productPricing = ProductPricing::find($group['product_pricing_id']);
-            }
 
-            $productPricing->update([
-                'price' => isset($group['price']) ? $group['price'] : 0,
-            ]);
+            // if price is defined and not 0
+            if(isset($group['price']) && $group['price'] > 0){
+                //if not have product pricing then create one
+                if (!$group['product_pricing_id'])
+                {
+                    $productPricing = new ProductPricing();
+                    $productPricing->role_id = Role::Stockist()->id;
+                    $productPricing->product_id = $product->id;
+                    $productPricing->site_id = Site::id();
+                    $productPricing->save();
+                    $productPricing->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
+                }
+                else
+                {
+                    $productPricing = ProductPricing::find($group['product_pricing_id']);
+                }
+
+                //update price
+                $productPricing->update([
+                    'price' => $group['price'],
+                ]);
+            }else{
+
+                // if product pricing is existing in database, price is not defined or 0 then delete it
+                if(isset($group['product_pricing_id'])){
+                    $productPricing = ProductPricing::find($group['product_pricing_id']);
+                    $product->delete();
+                }
+            }
         }
     }
 
