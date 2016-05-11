@@ -61,7 +61,7 @@ class Product extends Model
 
     public function bonusCategory()
     {
-        return $this->belongsTo(BonusCategory::class);
+        return $this->belongsTo(BonusCategory::class, 'bonus_categories_id');
     }
 
     public static function OtherPricingId()
