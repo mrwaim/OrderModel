@@ -68,6 +68,20 @@ class Order extends Model
     public $timestamps = true;
     protected $fillable = ['created_at', 'updated_at', 'tracking_id', 'order_status_id', 'product_pricing_id', 'proof_of_transfer_id'];
 
+    public function info()
+    {
+        $products = implode(',', $this->orderItems->map(function ($e) {return $e->productPricing->product->name;})->toArray());
+
+        $bonusCategory = implode(',', $this->orderItems->map(function ($e) {return $e->productPricing->product->bonusCategory->name;})->toArray());
+
+        return "id:$this->id status:{$this->orderStatus->name} product:$products bonusCategory:$bonusCategory";
+    }
+
+    public static function infoMap($orders)
+    {
+        return $orders->map(function ($e) {return $e->info();});
+    }
+
     public function bonuses()
     {
         return $this->hasManyThrough(config('bonus.bonus_model'), OrderItem::class);

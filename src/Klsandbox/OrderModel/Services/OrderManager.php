@@ -11,7 +11,7 @@ interface OrderManager
     function shipOrder(Order $order, $trackingId);
     function orderCreated(Order $order);
     function cancelOrder(Order $order);
-    function createFirstOrder($proofOfTransfer, $productPricingIdHash, $quantityHash);
-    function createRestockOrder($proofOfTransfer, $draft, $productPricingIdHash, $quantityHash);
+    function createFirstOrder($proofOfTransfer, array $productPricingIdHash, array $quantityHash);
+    function createRestockOrder($proofOfTransfer, $draft, array $productPricingIdHash, array $quantityHash);
     function setPaymentUploaded($order);
 }
