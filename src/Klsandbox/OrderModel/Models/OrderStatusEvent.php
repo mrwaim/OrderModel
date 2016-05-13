@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderStatusEvent whereOrderId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderStatusEvent whereOrderStatusId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderStatusEvent whereUserId($value)
+ * @mixin \Eloquent
  */
 class OrderStatusEvent extends Model
 {

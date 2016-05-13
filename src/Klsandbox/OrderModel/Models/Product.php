@@ -29,6 +29,11 @@ use Klsandbox\SiteModel\Site;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereImage($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereIsAvailable($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereHiddenFromOrdering($value)
+ * @property integer $bonus_category_id
+ * @property-read \Klsandbox\OrderModel\Models\ProductPricing $productPricing
+ * @property-read \App\Models\BonusCategory $bonusCategory
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereBonusCategoryId($value)
+ * @mixin \Eloquent
  */
 class Product extends Model
 {

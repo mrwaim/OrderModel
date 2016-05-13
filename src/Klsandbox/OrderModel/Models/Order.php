@@ -39,6 +39,20 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereApprovedAt($value)
  * @property float $price
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order wherePrice($value)
+ * @property string $shipped_at
+ * @property integer $shipped_by_id
+ * @property string $rejected_at
+ * @property integer $rejected_by_id
+ * @property integer $approved_by_id
+ * @property integer $customer_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Klsandbox\OrderModel\Models\OrderItem[] $orderItems
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereShippedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereShippedById($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereRejectedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereRejectedById($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereApprovedById($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereCustomerId($value)
+ * @mixin \Eloquent
  */
 class Order extends Model
 {

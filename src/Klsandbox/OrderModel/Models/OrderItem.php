@@ -5,6 +5,30 @@ namespace Klsandbox\OrderModel\Models;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\BonusModel\Models\BonusStatus;
 
+/**
+ * Klsandbox\OrderModel\Models\OrderItem
+ *
+ * @property integer $id
+ * @property integer $order_id
+ * @property integer $product_pricing_id
+ * @property integer $index
+ * @property integer $quantity
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property float $product_price
+ * @property-read \App\Models\Order $order
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Bonus[] $bonuses
+ * @property-read \Klsandbox\OrderModel\Models\ProductPricing $productPricing
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereOrderId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereProductPricingId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereIndex($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereQuantity($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereProductPrice($value)
+ * @mixin \Eloquent
+ */
 class OrderItem extends Model
 {
     protected $fillable = ['order_id', 'product_pricing_id', 'index', 'quantity', 'product_price'];
