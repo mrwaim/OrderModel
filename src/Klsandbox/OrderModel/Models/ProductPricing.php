@@ -97,7 +97,7 @@ class ProductPricing extends Model
         });
 
         if(! $user->hasDropshipAccess()){
-            $product = Product::where('name', 'Dropship membership')->first();
+            $product = Product::DropshipMembership();
 
             $product->productPricing->load([
                 'product', 'groups', 'product.bonusCategory'
