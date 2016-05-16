@@ -89,6 +89,13 @@ class Product extends Model
 
     // Model
 
+    public static function DropshipMembership()
+    {
+        return self::forSite()
+            ->where('name', 'Dropship membership')
+            ->first();
+    }
+
     /**
      * create new product when group is disabled
      *

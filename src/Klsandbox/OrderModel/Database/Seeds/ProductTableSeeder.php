@@ -32,7 +32,7 @@ class ProductTableSeeder extends Seeder {
                     'image' => null,
                     'is_available' => true,
                     'hidden_from_ordering' => false,
-                    'bonus_category_id' => \App\Models\BonusCategory::Basic()->id,
+                    'bonus_category_id' => BonusCategory::Basic()->id,
         ));
 
         $productPricing1Stockist = ProductPricing::create([

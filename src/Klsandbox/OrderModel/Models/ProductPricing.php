@@ -67,6 +67,7 @@ class ProductPricing extends Model
     {
         $list = self::with('product', 'groups', 'product.bonusCategory')->get();
 
+
         if(!config('group.enabled')) {
             return $list;
         }
@@ -94,6 +95,21 @@ class ProductPricing extends Model
                 return false;
             }
         });
+
+        if(! $user->hasDropshipAccess()){
+            $product = Product::DropshipMembership();
+
+            $product->productPricing->load([
+                'product', 'groups', 'product.bonusCategory'
+            ]);;
+
+            //if group is not enabled product pricing is not a collection
+            if(! config('group.enabled')){
+                $list = $list->merge([$product->productPricing]);
+            }else{
+                $list = $list->merge($product->productPricing);
+            }
+        }
 
         $list = $list->all();
         $list = array_values($list);
