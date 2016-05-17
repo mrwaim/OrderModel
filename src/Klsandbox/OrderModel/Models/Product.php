@@ -34,6 +34,8 @@ use Klsandbox\SiteModel\Site;
  * @property-read \App\Models\BonusCategory $bonusCategory
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereBonusCategoryId($value)
  * @mixin \Eloquent
+ * @property integer $max_quantity
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMaxQuantity($value)
  */
 class Product extends Model
 {
@@ -147,6 +149,7 @@ class Product extends Model
                 $product_price->role_id = Role::Stockist()->id;
                 $product_price->product_id = $product->id;
                 $product_price->price = $group['price'];
+                $product_price->price_east = $group['price_east'];
                 $product_price->site_id = Site::id();
                 $product_price->save();
                 $product_price->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
@@ -194,7 +197,7 @@ class Product extends Model
             $productPricing = null;
 
             // if price is defined and not 0
-            if(isset($group['price']) && $group['price'] > 0){
+            if((isset($group['price']) && $group['price'] > 0) && (isset($group['price_east']) && $group['price_east'] > 0)){
                 //if not have product pricing then create one
                 if (!$group['product_pricing_id'])
                 {
@@ -212,20 +215,23 @@ class Product extends Model
 
                 //update price
                 $productPricing->update([
-                    'price' => $group['price'],
+                    'price' => $group['price'] ? $group['price'] : null,
+                    'price_east' => $group['price_east'] ? $group['price_east'] : null,
                 ]);
             }else{
+                // if price and price_east is not defined then delete it
+                if( (!isset($group['price']) || !$group['price']) && (!isset($group['price_east']) || !$group['price_east']) ){
+                    // if product pricing is existing in database, price is not defined or 0 then delete it
+                    if(isset($group['product_pricing_id']) && $group['product_pricing_id'] > 0){
+                        $productPricing = ProductPricing::find($group['product_pricing_id']);
 
-                // if product pricing is existing in database, price is not defined or 0 then delete it
-                if(isset($group['product_pricing_id']) && $group['product_pricing_id'] > 0){
-                    $productPricing = ProductPricing::find($group['product_pricing_id']);
+                        // check product pricing is exist
+                        if($productPricing){
+                            $productPricing->groups()->sync([]);
+                            $productPricing->delete();
+                        }
 
-                    // check product pricing is exist
-                    if($productPricing){
-                        $productPricing->groups()->sync([]);
-                        $productPricing->delete();
                     }
-
                 }
             }
         }

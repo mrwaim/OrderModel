@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Group[] $groups
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereSku($value)
  * @mixin \Eloquent
+ * @property float $price_east
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing wherePriceEast($value)
  */
 class ProductPricing extends Model
 {
@@ -39,7 +41,8 @@ class ProductPricing extends Model
      * @var array
      */
     protected $fillable = [
-        'price'
+        'price',
+        'price_east'
     ];
 
     public function product()
@@ -66,7 +69,6 @@ class ProductPricing extends Model
     public static function getAvailableProductPricingList(User $user)
     {
         $list = self::with('product', 'groups', 'product.bonusCategory')->get();
-
 
         if(!config('group.enabled')) {
             return $list;

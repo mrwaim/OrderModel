@@ -53,6 +53,7 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereApprovedById($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereCustomerId($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Customer $customer
  */
 class Order extends Model
 {
@@ -104,6 +105,11 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(config('auth.model'));
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(App\Models\Customer::class);
     }
 
     // Deprecated
