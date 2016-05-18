@@ -26,20 +26,15 @@ class ProductTableSeeder extends Seeder {
             return;
         }
 
-        $product1 = Product::create(array(
-                    'name' => 'Restock',
-                    'description' => 'Restock',
-                    'image' => null,
-                    'is_available' => true,
-                    'hidden_from_ordering' => false,
-                    'bonus_category_id' => BonusCategory::Basic()->id,
+        Product::create(array(
+            'name' => 'Restock',
+            'description' => 'Restock',
+            'image' => null,
+            'is_available' => true,
+            'hidden_from_ordering' => false,
+            'bonus_category_id' => BonusCategory::Basic()->id,
         ));
 
-        $productPricing1Stockist = ProductPricing::create([
-                    'role_id' => Role::Stockist()->id,
-                    'product_id' => $product1->id,
-                    'price' => config('order.restock_price'),
-        ]);
     }
 
 }
