@@ -98,7 +98,7 @@ class ProductPricing extends Model
             }
         });
 
-        if(! $user->hasDropshipAccess()){
+        if(! $user->hasDropshipAccess() && $user->account_status == 'Approved'){
             $product = Product::DropshipMembership();
 
             $product->productPricing->load([
