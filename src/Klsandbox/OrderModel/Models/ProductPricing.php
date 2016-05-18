@@ -4,6 +4,8 @@ namespace Klsandbox\OrderModel\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Klsandbox\RoleModel\Role;
+use Klsandbox\SiteModel\Site;
 
 /**
  * Klsandbox\OrderModel\Models\ProductPricing
@@ -66,9 +68,15 @@ class ProductPricing extends Model
     }
 
 
-    public static function getAvailableProductPricingList(User $user)
+    public static function getAvailableProductPricingList(User $user, $targetRole = null)
     {
         $list = self::with('product', 'groups', 'product.bonusCategory')->get();
+
+        if ($targetRole)
+        {
+            $targetRole = Role::findByName($targetRole);
+            Site::protect($targetRole, 'role');
+        }
 
         if(!config('group.enabled')) {
             return $list;
@@ -97,6 +105,13 @@ class ProductPricing extends Model
                 return false;
             }
         });
+
+        if ($targetRole)
+        {
+            $list = $list->filter(function ($productPricing) use ($targetRole) {
+                return $productPricing->role_id == $targetRole->id;
+            });
+        }
 
         if(! $user->hasDropshipAccess() && $user->account_status == 'Approved'){
             $product = Product::DropshipMembership();

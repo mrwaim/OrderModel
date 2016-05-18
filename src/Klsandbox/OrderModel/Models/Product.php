@@ -66,6 +66,11 @@ class Product extends Model
         return Product::forSite()->where('name', '=', 'Restock')->first();
     }
 
+    public static function DropShipOrder()
+    {
+        return Product::forSite()->where('name', '=', 'Dropship Order')->first();
+    }
+
     public function bonusCategory()
     {
         return $this->belongsTo(BonusCategory::class);
