@@ -39,7 +39,7 @@ use Klsandbox\SiteModel\Site;
  */
 class Product extends Model
 {
-    protected $fillable = ['name', 'image', 'description', 'bonus_category_id'];
+    protected $fillable = ['name', 'image', 'description', 'bonus_category_id', 'max_quantity'];
 
     use \Klsandbox\SiteModel\SiteExtensions;
 
