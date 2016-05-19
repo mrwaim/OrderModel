@@ -36,10 +36,12 @@ use Klsandbox\SiteModel\Site;
  * @mixin \Eloquent
  * @property integer $max_quantity
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMaxQuantity($value)
+ * @property integer $min_quantity
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMinQuantity($value)
  */
 class Product extends Model
 {
-    protected $fillable = ['name', 'image', 'description', 'bonus_category_id', 'max_quantity'];
+    protected $fillable = ['name', 'image', 'description', 'bonus_category_id', 'min_quantity', 'max_quantity', 'is_available', 'hidden_from_ordering'];
 
     use \Klsandbox\SiteModel\SiteExtensions;
 
