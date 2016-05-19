@@ -32,6 +32,10 @@ use Klsandbox\SiteModel\Site;
  * @mixin \Eloquent
  * @property float $price_east
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing wherePriceEast($value)
+ * @property float $delivery
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereDelivery($value)
+ * @property float $delivery_east
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereDeliveryEast($value)
  */
 class ProductPricing extends Model
 {
@@ -44,7 +48,9 @@ class ProductPricing extends Model
      */
     protected $fillable = [
         'price',
-        'price_east'
+        'price_east',
+        'delivery',
+        'delivery_east',
     ];
 
     public function product()

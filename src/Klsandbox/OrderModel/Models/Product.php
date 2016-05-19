@@ -155,6 +155,8 @@ class Product extends Model
                 $product_price->product_id = $product->id;
                 $product_price->price = $group['price'];
                 $product_price->price_east = $group['price_east'];
+                $product_price->delivery = $group['delivery'];
+                $product_price->delivery_east = $group['delivery_east'];
                 $product_price->site_id = Site::id();
                 $product_price->save();
                 $product_price->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
@@ -222,6 +224,8 @@ class Product extends Model
                 $productPricing->update([
                     'price' => $group['price'] ? $group['price'] : null,
                     'price_east' => $group['price_east'] ? $group['price_east'] : null,
+                    'delivery' => $group['delivery'] ? $group['delivery'] : null,
+                    'delivery_east' => $group['delivery_east'] ? $group['delivery_east'] : null,
                 ]);
             }else{
                 // if price and price_east is not defined then delete it
