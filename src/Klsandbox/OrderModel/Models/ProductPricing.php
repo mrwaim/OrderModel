@@ -139,4 +139,26 @@ class ProductPricing extends Model
 
         return $list;
     }
+
+    public function getPriceAndDelivery($user, $customer, &$price, &$delivery)
+    {
+        if ($customer) {
+            if ($customer->pricingArea() == 'east') {
+                $price = $this->price_east;
+                $delivery = $this->delivery_east;
+            } else {
+                $price = $this->price;
+                $delivery = $this->delivery;
+            }
+        } else {
+            $user = auth()->user();
+            if ($user->pricingArea() == 'east') {
+                $price = $this->price_east;
+                $delivery = $this->delivery_east;
+            } else {
+                $price = $this->price;
+                $delivery = $this->delivery;
+            }
+        }
+    }
 }

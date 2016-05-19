@@ -28,10 +28,12 @@ use Klsandbox\BonusModel\Models\BonusStatus;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereProductPrice($value)
  * @mixin \Eloquent
+ * @property float $delivery
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereDelivery($value)
  */
 class OrderItem extends Model
 {
-    protected $fillable = ['order_id', 'product_pricing_id', 'index', 'quantity', 'product_price'];
+    protected $fillable = ['order_id', 'product_pricing_id', 'index', 'quantity', 'product_price', 'delivery'];
 
     /**
      * Relationship with `orders` table.
