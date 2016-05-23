@@ -20,6 +20,7 @@ use Klsandbox\SiteModel\Site;
  * @property string $image
  * @property boolean $is_available
  * @property boolean $hidden_from_ordering
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereSiteId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereCreatedAt($value)
@@ -29,14 +30,20 @@ use Klsandbox\SiteModel\Site;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereImage($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereIsAvailable($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereHiddenFromOrdering($value)
+ *
  * @property integer $bonus_category_id
  * @property-read \Klsandbox\OrderModel\Models\ProductPricing $productPricing
  * @property-read \App\Models\BonusCategory $bonusCategory
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereBonusCategoryId($value)
  * @mixin \Eloquent
+ *
  * @property integer $max_quantity
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMaxQuantity($value)
+ *
  * @property integer $min_quantity
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMinQuantity($value)
  */
 class Product extends Model
@@ -51,7 +58,7 @@ class Product extends Model
     // Relation
     public function productPricing()
     {
-        if(! config('group.enabled')){
+        if (!config('group.enabled')) {
             return $this->hasOne(ProductPricing::class);
         }
 
@@ -65,12 +72,12 @@ class Product extends Model
 
     public static function Restock()
     {
-        return Product::forSite()->where('name', '=', 'Restock')->first();
+        return self::forSite()->where('name', '=', 'Restock')->first();
     }
 
     public static function DropShipOrder()
     {
-        return Product::forSite()->where('name', '=', 'Dropship Order')->first();
+        return self::forSite()->where('name', '=', 'Dropship Order')->first();
     }
 
     public function bonusCategory()
@@ -112,7 +119,7 @@ class Product extends Model
      */
     public function createProductGroupDisabled(array $input)
     {
-        $product = new Product();
+        $product = new self();
 
         $product->name = $input['name'];
         $product->description = $input['description'];
@@ -138,8 +145,7 @@ class Product extends Model
      */
     public function createProductGroupEnabled(array $input)
     {
-
-        $product = new Product();
+        $product = new self();
 
         $product->name = $input['name'];
         $product->description = $input['description'];
@@ -150,8 +156,8 @@ class Product extends Model
         $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->save();
 
-        foreach($input['groups'] as $group){
-            if(isset($group['price']) && $group['price'] > 0){
+        foreach ($input['groups'] as $group) {
+            if (isset($group['price']) && $group['price'] > 0) {
                 $product_price = new ProductPricing();
                 $product_price->role_id = Role::Stockist()->id;
                 $product_price->product_id = $product->id;
@@ -174,7 +180,6 @@ class Product extends Model
      */
     public function updateProductGroupDisabled(Product $product, array $input)
     {
-
         $product->name = $input['name'];
         $product->description = $input['description'];
 
@@ -184,7 +189,7 @@ class Product extends Model
         $product->save();
 
         $product->productPricing()->update([
-            'price' => $input['price']
+            'price' => $input['price'],
         ]);
     }
 
@@ -201,24 +206,20 @@ class Product extends Model
         $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->save();
 
-        foreach($input['groups'] as $group) {
-
+        foreach ($input['groups'] as $group) {
             $productPricing = null;
 
             // if price is defined and not 0
-            if((isset($group['price']) && $group['price'] > 0) && (isset($group['price_east']) && $group['price_east'] > 0)){
+            if ((isset($group['price']) && $group['price'] > 0) && (isset($group['price_east']) && $group['price_east'] > 0)) {
                 //if not have product pricing then create one
-                if (!$group['product_pricing_id'])
-                {
+                if (!$group['product_pricing_id']) {
                     $productPricing = new ProductPricing();
                     $productPricing->role_id = Role::Stockist()->id;
                     $productPricing->product_id = $product->id;
                     $productPricing->site_id = Site::id();
                     $productPricing->save();
                     $productPricing->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
-                }
-                else
-                {
+                } else {
                     $productPricing = ProductPricing::find($group['product_pricing_id']);
                 }
 
@@ -229,19 +230,18 @@ class Product extends Model
                     'delivery' => $group['delivery'] ? $group['delivery'] : null,
                     'delivery_east' => $group['delivery_east'] ? $group['delivery_east'] : null,
                 ]);
-            }else{
+            } else {
                 // if price and price_east is not defined then delete it
-                if( (!isset($group['price']) || !$group['price']) && (!isset($group['price_east']) || !$group['price_east']) ){
+                if ((!isset($group['price']) || !$group['price']) && (!isset($group['price_east']) || !$group['price_east'])) {
                     // if product pricing is existing in database, price is not defined or 0 then delete it
-                    if(isset($group['product_pricing_id']) && $group['product_pricing_id'] > 0){
+                    if (isset($group['product_pricing_id']) && $group['product_pricing_id'] > 0) {
                         $productPricing = ProductPricing::find($group['product_pricing_id']);
 
                         // check product pricing is exist
-                        if($productPricing){
+                        if ($productPricing) {
                             $productPricing->groups()->sync([]);
                             $productPricing->delete();
                         }
-
                     }
                 }
             }
@@ -250,28 +250,23 @@ class Product extends Model
 
     public function updateProduct($input)
     {
-
         $productPricing->price = $inputs['price'];
         $productPricing->save();
 
-        if ($inputs['group_id'])
-        {
+        if ($inputs['group_id']) {
             $productPricing->groups()->sync([$inputs['group_id']]);
-        }
-        else
-        {
+        } else {
             $productPricing->groups()->sync([]);
         }
 
         $inputs = array_except($inputs, ['group_id', 'price', '_token']);
 
         $productPricing->product->update($inputs);
-
     }
 
     public function setUnavailable($id)
     {
-        $product = Product::find($id);
+        $product = self::find($id);
         $product->is_available = false;
         $product->save();
     }

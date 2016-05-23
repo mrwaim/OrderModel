@@ -2,17 +2,13 @@
 
 namespace Klsandbox\OrderModel\Database\Seeds;
 
-
 use App\Models\BonusCategory;
 use Illuminate\Database\Seeder;
-use Klsandbox\RoleModel\Role;
 use Klsandbox\OrderModel\Models\Product;
-use Klsandbox\OrderModel\Models\ProductPricing;
 use Klsandbox\SiteModel\Site;
 
 class ProductTableSeeder extends Seeder
 {
-
     public function run()
     {
         foreach (Site::all() as $site) {
@@ -42,7 +38,5 @@ class ProductTableSeeder extends Seeder
             'hidden_from_ordering' => false,
             'bonus_category_id' => $bonusCategoryId,
         ));
-
     }
-
 }

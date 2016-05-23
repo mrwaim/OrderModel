@@ -19,6 +19,7 @@ use Klsandbox\SiteModel\Site;
  * @property integer $site_id
  * @property-read \Klsandbox\OrderModel\Models\Product $product
  * @property-read \Klsandbox\RoleModel\Role $role
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereUpdatedAt($value)
@@ -26,15 +27,23 @@ use Klsandbox\SiteModel\Site;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereProductId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing wherePrice($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereSiteId($value)
+ *
  * @property string $sku
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Group[] $groups
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereSku($value)
  * @mixin \Eloquent
+ *
  * @property float $price_east
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing wherePriceEast($value)
+ *
  * @property float $delivery
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereDelivery($value)
+ *
  * @property float $delivery_east
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereDeliveryEast($value)
  */
 class ProductPricing extends Model
@@ -65,7 +74,7 @@ class ProductPricing extends Model
 
     public static function RestockPricingId()
     {
-        return ProductPricing::where('product_id', '=', Product::Restock()->id)->first()->id;
+        return self::where('product_id', '=', Product::Restock()->id)->first()->id;
     }
 
     public function groups()
@@ -73,38 +82,32 @@ class ProductPricing extends Model
         return $this->belongsToMany(\App\Models\Group::class, 'group_product_pricing');
     }
 
-
     public static function getAvailableProductPricingList(User $user, $targetRole = null)
     {
         $list = self::with('product', 'groups', 'product.bonusCategory')->get();
 
-        if ($targetRole)
-        {
+        if ($targetRole) {
             $targetRole = Role::findByName($targetRole);
             Site::protect($targetRole, 'role');
         }
 
-        if(!config('group.enabled')) {
+        if (!config('group.enabled')) {
             return $list;
         }
 
         $userGroups = $user->groups()->get()->pluck('id')->all();
 
         $list = $list->filter(function ($productPricing) use ($userGroups) {
-            if (!$productPricing->product->is_available)
-            {
+            if (!$productPricing->product->is_available) {
                 return false;
             }
 
-            if ($productPricing->price <= 0)
-            {
+            if ($productPricing->price <= 0) {
                 return false;
             }
 
-            foreach ($productPricing->groups as $group)
-            {
-                if (in_array($group->id, $userGroups))
-                {
+            foreach ($productPricing->groups as $group) {
+                if (in_array($group->id, $userGroups)) {
                     return true;
                 }
 
@@ -112,24 +115,23 @@ class ProductPricing extends Model
             }
         });
 
-        if ($targetRole)
-        {
+        if ($targetRole) {
             $list = $list->filter(function ($productPricing) use ($targetRole) {
                 return $productPricing->role_id == $targetRole->id;
             });
         }
 
-        if(! $user->hasDropshipAccess() && $user->account_status == 'Approved'){
+        if (!$user->hasDropshipAccess() && $user->account_status == 'Approved') {
             $product = Product::DropshipMembership();
 
             $product->productPricing->load([
-                'product', 'groups', 'product.bonusCategory'
-            ]);;
+                'product', 'groups', 'product.bonusCategory',
+            ]);
 
             //if group is not enabled product pricing is not a collection
-            if(! config('group.enabled')){
+            if (!config('group.enabled')) {
                 $list = $list->merge([$product->productPricing]);
-            }else{
+            } else {
                 $list = $list->merge($product->productPricing);
             }
         }

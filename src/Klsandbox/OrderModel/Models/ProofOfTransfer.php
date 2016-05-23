@@ -20,6 +20,7 @@ use App;
  * @property float $amount
  * @property integer $user_id
  * @property integer $receiver_user_id
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereUpdatedAt($value)
@@ -29,19 +30,22 @@ use App;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereAmount($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereUserId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereReceiverUserId($value)
+ *
  * @property integer $site_id
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereSiteId($value)
+ *
  * @property string $order_notes
  * @property string $payment_mode
  * @property-read \Illuminate\Database\Eloquent\Collection|\Klsandbox\BillplzRoute\Models\BillplzResponse[] $billplzResponses
  * @property-read \App\Models\Order $order
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereOrderNotes($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer wherePaymentMode($value)
  * @mixin \Eloquent
  */
 class ProofOfTransfer extends Model
 {
-
     protected $table = 'proof_of_transfers';
     public $timestamps = true;
     protected $fillable = ['bank_name', 'image', 'amount', 'user_id', 'receiver_user_id', 'notes', 'payment_mode'];
@@ -53,26 +57,23 @@ class ProofOfTransfer extends Model
         if ($request->file('image')) {
             $originalFileName = $request->file('image')->getClientOriginalName();
 
-            $fileName = "upload_" . Auth::user()->id . mt_rand() . "." . pathinfo($originalFileName, PATHINFO_EXTENSION);
+            $fileName = 'upload_' . Auth::user()->id . mt_rand() . '.' . pathinfo($originalFileName, PATHINFO_EXTENSION);
 
-            $newFileName = $request->file('image')->move(public_path("img/user"), $fileName);
-            Log::info("Move " . $newFileName);
+            $newFileName = $request->file('image')->move(public_path('img/user'), $fileName);
+            Log::info('Move ' . $newFileName);
         }
 
         if (!Auth::user()->referral_id) {
-            App::abort(500, "Invalid user");
+            App::abort(500, 'Invalid user');
         }
 
-        $proofOfTransfers = new ProofOfTransfer();
+        $proofOfTransfers = new self();
 
         $proofOfTransfers->payment_mode = $request->payment_mode;
 
-        if ($proofOfTransfers->payment_mode == 'BankTransfer')
-        {
+        if ($proofOfTransfers->payment_mode == 'BankTransfer') {
             $proofOfTransfers->bank_name = $request->bank_name;
-        }
-        else
-        {
+        } else {
             $proofOfTransfers->bank_name = $proofOfTransfers->payment_mode;
         }
 
@@ -82,7 +83,6 @@ class ProofOfTransfer extends Model
         $proofOfTransfers->notes = $request->notes;
         $proofOfTransfers->order_notes = $request->order_notes;
         $proofOfTransfers->receiver_user_id = Auth::user()->referral_id;
-
 
         if ($fileName) {
             $proofOfTransfers->image = "img/user/$fileName";

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $name
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderStatus whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderStatus whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderStatus whereUpdatedAt($value)
@@ -19,48 +20,46 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OrderStatus extends Model
 {
-
     protected $table = 'order_statuses';
     public $timestamps = true;
 
     public static function FirstOrder()
     {
-        return OrderStatus::where(['name' => 'FirstOrder'])->first();
+        return self::where(['name' => 'FirstOrder'])->first();
     }
 
     public static function NewOrderStatus()
     {
-        return OrderStatus::where(['name' => 'New'])->first();
+        return self::where(['name' => 'New'])->first();
     }
 
     public static function PaymentUploaded()
     {
-        return OrderStatus::where(['name' => 'Payment_Uploaded'])->first();
+        return self::where(['name' => 'Payment_Uploaded'])->first();
     }
 
     public static function Approved()
     {
-        return OrderStatus::where(['name' => 'Approved'])->first();
+        return self::where(['name' => 'Approved'])->first();
     }
 
     public static function Rejected()
     {
-        return OrderStatus::where(['name' => 'Rejected'])->first();
+        return self::where(['name' => 'Rejected'])->first();
     }
 
     public static function Shipped()
     {
-        return OrderStatus::where(['name' => 'Shipped'])->first();
+        return self::where(['name' => 'Shipped'])->first();
     }
 
     public static function Received()
     {
-        return OrderStatus::where(['name' => 'Received'])->first();
+        return self::where(['name' => 'Received'])->first();
     }
 
     public static function Draft()
     {
-        return OrderStatus::where(['name' => 'Draft'])->first();
+        return self::where(['name' => 'Draft'])->first();
     }
-
 }

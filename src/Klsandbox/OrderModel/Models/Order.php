@@ -26,6 +26,7 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @property integer $proof_of_transfer_id
  * @property string $payment_mode
  * @property string $approved_at
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereSiteId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereCreatedAt($value)
@@ -37,8 +38,11 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereProofOfTransferId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order wherePaymentMode($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereApprovedAt($value)
+ *
  * @property float $price
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order wherePrice($value)
+ *
  * @property string $shipped_at
  * @property integer $shipped_by_id
  * @property string $rejected_at
@@ -46,6 +50,7 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @property integer $approved_by_id
  * @property integer $customer_id
  * @property-read \Illuminate\Database\Eloquent\Collection|\Klsandbox\OrderModel\Models\OrderItem[] $orderItems
+ *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereShippedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereShippedById($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereRejectedAt($value)
@@ -53,11 +58,11 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereApprovedById($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereCustomerId($value)
  * @mixin \Eloquent
+ *
  * @property-read \App\Models\Customer $customer
  */
 class Order extends Model
 {
-
     use \Klsandbox\SiteModel\SiteExtensions;
 
     public static function boot()
@@ -161,6 +166,7 @@ class Order extends Model
      * Returns the order that has status = approved.
      *
      * @param $query
+     *
      * @return mixed
      */
     public static function whereNotFulfilled($query)
@@ -174,6 +180,7 @@ class Order extends Model
      * Returns the order that has status = shipped.
      *
      * @param $query
+     *
      * @return mixed
      */
     public static function whereFulfilled($query)
