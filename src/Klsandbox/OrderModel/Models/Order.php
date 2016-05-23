@@ -196,6 +196,7 @@ class Order extends Model
         $items = $this->orderItems;
         foreach ($items as $item) {
             if ($item->productPricing->product->is_hq) {
+                // Assuming the order just hq or not hq
                 return true;
             }
         }
