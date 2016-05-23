@@ -48,7 +48,7 @@ class OrderModelServiceProvider extends ServiceProvider
             $pattern = "/(?<!\w)(\s*)@olink\(\s*(.*?)\)/";
 
             return preg_replace($pattern, '$1'
-                . '<?php if($auth->admin || $auth->staff || $auth->id == $2->user_id || $auth->id == $2->user->referral_id) {?>' . PHP_EOL
+                . '<?php if($auth->admin || $auth->staff || $auth->id == $2->user_id || $auth->id == $2->user->referral_id || $auth->premium) {?>' . PHP_EOL
                 . '<a href="/order-management/view/<?php echo $2->id ?>">' . PHP_EOL
                 . '#<?php echo (1024 + $2->id) ?>' . PHP_EOL
                 . '</a>' . PHP_EOL
