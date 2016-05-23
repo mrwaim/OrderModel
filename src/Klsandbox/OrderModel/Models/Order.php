@@ -189,4 +189,17 @@ class Order extends Model
             $q->where('order_status_id', '=', OrderStatus::Shipped()->id);
         });
     }
+
+    public function isHq()
+    {
+
+        $items = $this->orderItems;
+        foreach ($items as $item) {
+            if ($item->productPricing->product->is_hq) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
