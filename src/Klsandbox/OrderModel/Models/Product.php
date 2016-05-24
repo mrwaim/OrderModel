@@ -45,6 +45,10 @@ use Klsandbox\SiteModel\Site;
  * @property integer $min_quantity
  *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMinQuantity($value)
+ *
+ * @property boolean $is_hq
+ *
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereIsHq($value)
  */
 class Product extends Model
 {

@@ -36,7 +36,7 @@ use Klsandbox\BonusModel\Models\BonusStatus;
  */
 class OrderItem extends Model
 {
-    protected $fillable = ['order_id', 'product_pricing_id', 'index', 'quantity', 'product_price', 'delivery'];
+    protected $fillable = ['order_id', 'product_pricing_id', 'index', 'quantity', 'product_price', 'delivery', 'organization_id'];
 
     /**
      * Relationship with `orders` table.
