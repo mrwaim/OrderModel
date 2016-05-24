@@ -192,10 +192,9 @@ class Order extends Model
 
     public function isHq()
     {
-
         $items = $this->orderItems;
         foreach ($items as $item) {
-            if (! $item->productPricing->product->is_hq) {
+            if (!$item->productPricing->product->is_hq) {
                 // Assuming the order just hq or not hq
                 return false;
             }
