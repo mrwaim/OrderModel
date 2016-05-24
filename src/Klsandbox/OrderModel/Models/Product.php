@@ -53,7 +53,7 @@ use Klsandbox\SiteModel\Site;
 class Product extends Model
 {
     protected $fillable = ['name', 'image', 'description', 'bonus_category_id', 'min_quantity', 'max_quantity',
-        'is_available', 'hidden_from_ordering', 'is_hq'];
+        'is_available', 'hidden_from_ordering', 'is_hq', ];
 
     use \Klsandbox\SiteModel\SiteExtensions;
 
@@ -190,7 +190,6 @@ class Product extends Model
         $product->name = $input['name'];
         $product->description = $input['description'];
         $product->is_hq = $input['is_hq'];
-
 
         isset($input['image']) ? $product->image = $input['image'] : '';
 

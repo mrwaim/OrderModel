@@ -33,6 +33,10 @@ use Klsandbox\BonusModel\Models\BonusStatus;
  * @property float $delivery
  *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereDelivery($value)
+ *
+ * @property integer $organization_id
+ *
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereOrganizationId($value)
  */
 class OrderItem extends Model
 {
