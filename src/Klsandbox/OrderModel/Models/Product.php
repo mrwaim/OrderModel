@@ -138,6 +138,8 @@ class Product extends Model
         $product_price->price = $input['price'];
         $product_price->site_id = Site::id();
         $product_price->save();
+
+        return $product;
     }
 
     /**
@@ -173,6 +175,8 @@ class Product extends Model
                 $product_price->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
             }
         }
+
+        return $product;
     }
 
     /**
