@@ -53,7 +53,7 @@ use Klsandbox\SiteModel\Site;
 class Product extends Model
 {
     protected $fillable = ['name', 'image', 'description', 'bonus_category_id', 'min_quantity', 'max_quantity',
-        'is_available', 'hidden_from_ordering', 'is_hq', ];
+        'is_available', 'hidden_from_ordering', 'is_hq', 'for_customer', 'new_user'];
 
     use \Klsandbox\SiteModel\SiteExtensions;
 
@@ -134,6 +134,8 @@ class Product extends Model
         $product->image = $input['image'];
         $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->is_hq = $input['is_hq'];
+        $product->for_customer = $input['for_customer'];
+        $product->new_user = $input['new_user'];
         $product->save();
 
         $product_price = new ProductPricing();
@@ -163,6 +165,8 @@ class Product extends Model
         $product->image = $input['image'];
         $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->is_hq = $input['is_hq'];
+        $product->for_customer = $input['for_customer'];
+        $product->new_user = $input['new_user'];
         $product->save();
 
         foreach ($input['groups'] as $group) {
@@ -194,6 +198,8 @@ class Product extends Model
         $product->name = $input['name'];
         $product->description = $input['description'];
         $product->is_hq = $input['is_hq'];
+        $product->for_customer = $input['for_customer'];
+        $product->new_user = $input['new_user'];
 
         isset($input['image']) ? $product->image = $input['image'] : '';
 
@@ -217,6 +223,9 @@ class Product extends Model
         $product->is_hq = $input['is_hq'];
         isset($input['image']) ? $product->image = $input['image'] : '';
         $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->is_hq = $input['is_hq'];
+        $product->for_customer = $input['for_customer'];
+        $product->new_user = $input['new_user'];
         $product->save();
 
         foreach ($input['groups'] as $group) {
