@@ -63,6 +63,16 @@ class ProofOfTransfer extends Model
             Log::info('Move ' . $newFileName);
         }
 
+        return self::proofOfTransferFromRequestWithoutImages($request, "img/user/$fileName", $request->totalAmount());
+    }
+
+    /**
+     * @param App\Http\Requests\OrderPostRequest $request
+     * @param $fileName
+     * @return ProofOfTransfer
+     */
+    public static function proofOfTransferFromRequestWithoutImages($request, $fileName, $amount)
+    {
         if (!Auth::user()->referral_id) {
             App::abort(500, 'Invalid user');
         }
@@ -77,15 +87,16 @@ class ProofOfTransfer extends Model
             $proofOfTransfers->bank_name = $proofOfTransfers->payment_mode;
         }
 
-        $proofOfTransfers->amount = $request->totalAmount();
+        $proofOfTransfers->amount = $amount;
 
         $proofOfTransfers->user_id = Auth::user()->id;
         $proofOfTransfers->notes = $request->notes;
         $proofOfTransfers->order_notes = $request->order_notes;
         $proofOfTransfers->receiver_user_id = Auth::user()->referral_id;
 
+
         if ($fileName) {
-            $proofOfTransfers->image = "img/user/$fileName";
+            $proofOfTransfers->image = $fileName;
         }
 
         $proofOfTransfers->save();
