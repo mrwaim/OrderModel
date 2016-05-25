@@ -190,16 +190,43 @@ class Order extends Model
         });
     }
 
-    public function isHq()
+    public function canApprove($auth)
     {
-        $items = $this->orderItems;
-        foreach ($items as $item) {
-            if (!$item->productPricing->product->is_hq) {
+        if ($auth->manager) {
+            $items = $this->orderItems;
+            foreach ($items as $item) {
                 // Assuming the order just hq or not hq
-                return false;
+                if ($item->organization_id == $auth->organization_id) {
+                    return true;
+                }
             }
         }
 
-        return true;
+        return false;
+    }
+
+    public function canShip($auth)
+    {
+        if ($auth->manager || $auth->staff) {
+            $items = $this->orderItems;
+            foreach ($items as $item) {
+                // Assuming the order just hq or not hq
+                if ($item->organization_id == $auth->organization_id) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function canApproveState()
+    {
+        return $this->order_status_id < 4 || $this->order_status_id > 7;
+    }
+
+    public function canShipState()
+    {
+        return $this->order_status_id == 4 && $this->tracking_id == '';
     }
 }
