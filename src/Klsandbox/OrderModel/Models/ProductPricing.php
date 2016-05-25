@@ -97,23 +97,28 @@ class ProductPricing extends Model
 
         $userGroups = $user->groups()->get()->pluck('id')->all();
 
-        $list = $list->filter(function ($productPricing) use ($userGroups) {
-            if (!$productPricing->product->is_available) {
-                return false;
-            }
-
-            if ($productPricing->price <= 0) {
-                return false;
-            }
-
-            foreach ($productPricing->groups as $group) {
-                if (in_array($group->id, $userGroups)) {
-                    return true;
+        if ($user->access()->sales) {
+            return $list;
+        } else {
+            $list = $list->filter(function ($productPricing) use ($userGroups) {
+                if (!$productPricing->product->is_available) {
+                    return false;
                 }
 
-                return false;
-            }
-        });
+                if ($productPricing->price <= 0) {
+                    return false;
+                }
+
+                foreach ($productPricing->groups as $group) {
+                    if (in_array($group->id, $userGroups)) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            });
+
+        }
 
         if ($targetRole) {
             $list = $list->filter(function ($productPricing) use ($targetRole) {
@@ -121,7 +126,7 @@ class ProductPricing extends Model
             });
         }
 
-        if (!$user->access()->dropship && $user->account_status == 'Approved') {
+        if (!$user->access()->sales && !$user->access()->dropship && $user->account_status == 'Approved') {
             $product = Product::DropshipMembership();
 
             $product->productPricing->load([
