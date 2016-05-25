@@ -141,9 +141,7 @@ class ProductPricing extends Model
         }
 
         $list = $list->all();
-        $list = array_values($list);
-
-        return $list;
+        return array_values($list);
     }
 
     public function getPriceAndDelivery($user, $customer, &$price, &$delivery)
