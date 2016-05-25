@@ -117,7 +117,6 @@ class ProductPricing extends Model
                     return false;
                 }
             });
-
         }
 
         if ($targetRole) {
