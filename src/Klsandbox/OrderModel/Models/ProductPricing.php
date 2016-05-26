@@ -5,7 +5,6 @@ namespace Klsandbox\OrderModel\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\RoleModel\Role;
-use Klsandbox\SiteModel\Site;
 
 /**
  * Klsandbox\OrderModel\Models\ProductPricing

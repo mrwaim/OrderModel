@@ -40,12 +40,13 @@ class OrderStatus extends Model
     private static function findByName($name)
     {
         self::updateCache();
+
         return self::$cache[$name];
     }
 
     public static function FirstOrder()
     {
-       return self::findByName('FirstOrder');
+        return self::findByName('FirstOrder');
     }
 
     public static function NewOrderStatus()
