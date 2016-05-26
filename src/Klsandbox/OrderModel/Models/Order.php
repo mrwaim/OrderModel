@@ -86,7 +86,16 @@ class Order extends Model
 
     protected $table = 'orders';
     public $timestamps = true;
-    protected $fillable = ['created_at', 'updated_at', 'tracking_id', 'order_status_id', 'product_pricing_id', 'proof_of_transfer_id', 'customer_id'];
+    protected $fillable = [
+        'created_at',
+        'updated_at',
+        'tracking_id',
+        'order_status_id',
+        'product_pricing_id',
+        'proof_of_transfer_id',
+        'customer_id',
+        'organization_id',
+    ];
 
     public function info()
     {
