@@ -136,6 +136,7 @@ class Product extends Model
         $product->is_hq = $input['is_hq'];
         $product->for_customer = $input['for_customer'];
         $product->new_user = $input['new_user'];
+        $product->hidden_from_ordering = $input['hidden_from_ordering'];
         $product->save();
 
         $product_price = new ProductPricing();
@@ -167,6 +168,7 @@ class Product extends Model
         $product->is_hq = $input['is_hq'];
         $product->for_customer = $input['for_customer'];
         $product->new_user = $input['new_user'];
+        $product->hidden_from_ordering = $input['hidden_from_ordering'];
         $product->save();
 
         foreach ($input['groups'] as $group) {
@@ -200,6 +202,7 @@ class Product extends Model
         $product->is_hq = $input['is_hq'];
         $product->for_customer = $input['for_customer'];
         $product->new_user = $input['new_user'];
+        $product->hidden_from_ordering = $input['hidden_from_ordering'];
 
         isset($input['image']) ? $product->image = $input['image'] : '';
 
@@ -226,6 +229,7 @@ class Product extends Model
         $product->is_hq = $input['is_hq'];
         $product->for_customer = $input['for_customer'];
         $product->new_user = $input['new_user'];
+        $product->hidden_from_ordering = $input['hidden_from_ordering'];
         $product->save();
 
         foreach ($input['groups'] as $group) {

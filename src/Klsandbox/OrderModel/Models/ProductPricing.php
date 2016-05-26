@@ -82,68 +82,6 @@ class ProductPricing extends Model
         return $this->belongsToMany(\App\Models\Group::class, 'group_product_pricing');
     }
 
-    public static function getAvailableProductPricingList(User $user, $targetRole = null)
-    {
-        $list = self::with('product', 'groups', 'product.bonusCategory')->get();
-
-        if ($targetRole) {
-            $targetRole = Role::findByName($targetRole);
-            Site::protect($targetRole, 'role');
-        }
-
-        if (!config('group.enabled')) {
-            return $list;
-        }
-
-        $userGroups = $user->groups()->get()->pluck('id')->all();
-
-        if ($user->access()->sales) {
-            return $list;
-        } else {
-            $list = $list->filter(function ($productPricing) use ($userGroups) {
-                if (!$productPricing->product->is_available) {
-                    return false;
-                }
-
-                if ($productPricing->price <= 0) {
-                    return false;
-                }
-
-                foreach ($productPricing->groups as $group) {
-                    if (in_array($group->id, $userGroups)) {
-                        return true;
-                    }
-
-                    return false;
-                }
-            });
-        }
-
-        if ($targetRole) {
-            $list = $list->filter(function ($productPricing) use ($targetRole) {
-                return $productPricing->role_id == $targetRole->id;
-            });
-        }
-
-        if (!$user->access()->sales && !$user->access()->dropship && $user->account_status == 'Approved') {
-            $product = Product::DropshipMembership();
-
-            $product->productPricing->load([
-                'product', 'groups', 'product.bonusCategory',
-            ]);
-
-            //if group is not enabled product pricing is not a collection
-            if (!config('group.enabled')) {
-                $list = $list->merge([$product->productPricing]);
-            } else {
-                $list = $list->merge($product->productPricing);
-            }
-        }
-
-        $list = $list->all();
-        return array_values($list);
-    }
-
     public function getPriceAndDelivery($user, $customer, &$price, &$delivery)
     {
         if ($customer) {
