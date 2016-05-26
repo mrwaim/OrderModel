@@ -69,6 +69,7 @@ class ProofOfTransfer extends Model
     /**
      * @param App\Http\Requests\OrderPostRequest $request
      * @param $fileName
+     *
      * @return ProofOfTransfer
      */
     public static function proofOfTransferFromRequestWithoutImages($request, $fileName, $amount)
@@ -93,7 +94,6 @@ class ProofOfTransfer extends Model
         $proofOfTransfers->notes = $request->notes;
         $proofOfTransfers->order_notes = $request->order_notes;
         $proofOfTransfers->receiver_user_id = Auth::user()->referral_id;
-
 
         if ($fileName) {
             $proofOfTransfers->image = $fileName;

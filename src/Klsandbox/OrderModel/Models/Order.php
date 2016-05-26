@@ -99,16 +99,22 @@ class Order extends Model
 
     public function info()
     {
-        $products = implode(',', $this->orderItems->map(function ($e) {return $e->productPricing->product->name;})->toArray());
+        $products = implode(',', $this->orderItems->map(function ($e) {
+            return $e->productPricing->product->name;
+        })->toArray());
 
-        $bonusCategory = implode(',', $this->orderItems->map(function ($e) {return $e->productPricing->product->bonusCategory->name;})->toArray());
+        $bonusCategory = implode(',', $this->orderItems->map(function ($e) {
+            return $e->productPricing->product->bonusCategory->name;
+        })->toArray());
 
         return "id:$this->id status:{$this->orderStatus->name} product:$products bonusCategory:$bonusCategory";
     }
 
     public static function infoMap($orders)
     {
-        return $orders->map(function ($e) {return $e->info();});
+        return $orders->map(function ($e) {
+            return $e->info();
+        });
     }
 
     public function bonuses()
@@ -202,12 +208,8 @@ class Order extends Model
     public function canApprove($auth)
     {
         if ($auth->manager) {
-            $items = $this->orderItems;
-            foreach ($items as $item) {
-                // Assuming the order just hq or not hq
-                if ($item->organization_id == $auth->organization_id) {
-                    return true;
-                }
+            if ($this->organization_id == $auth->organization_id) {
+                return true;
             }
         }
 
@@ -217,12 +219,8 @@ class Order extends Model
     public function canShip($auth)
     {
         if ($auth->manager || $auth->staff) {
-            $items = $this->orderItems;
-            foreach ($items as $item) {
-                // Assuming the order just hq or not hq
-                if ($item->organization_id == $auth->organization_id) {
-                    return true;
-                }
+            if ($this->organization_id == $auth->organization_id) {
+                return true;
             }
         }
 

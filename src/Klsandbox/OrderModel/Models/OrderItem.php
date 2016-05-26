@@ -2,6 +2,7 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App\Scopes\UserBasedModelScope;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\BonusModel\Models\BonusStatus;
 
@@ -41,6 +42,13 @@ use Klsandbox\BonusModel\Models\BonusStatus;
 class OrderItem extends Model
 {
     protected $fillable = ['order_id', 'product_pricing_id', 'index', 'quantity', 'product_price', 'delivery', 'organization_id'];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new UserBasedModelScope());
+    }
 
     /**
      * Relationship with `orders` table.
