@@ -2,7 +2,7 @@
 
 namespace Klsandbox\OrderModel\Models;
 
-use App\Scopes\UserBasedModelScope;
+use App\Scopes\OrderItemScope;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\BonusModel\Models\BonusStatus;
 
@@ -47,7 +47,7 @@ class OrderItem extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new UserBasedModelScope());
+        static::addGlobalScope(new OrderItemScope());
     }
 
     /**
