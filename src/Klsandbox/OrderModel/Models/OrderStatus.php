@@ -23,43 +23,63 @@ class OrderStatus extends Model
     protected $table = 'order_statuses';
     public $timestamps = true;
 
+    private static $cache = null;
+
+    private static function updateCache()
+    {
+        if (self::$cache) {
+            return;
+        }
+
+        self::$cache = [];
+        foreach (self::select('id', 'name')->get() as $item) {
+            self::$cache[$item->name] = $item;
+        }
+    }
+
+    private static function findByName($name)
+    {
+        self::updateCache();
+        return self::$cache[$name];
+    }
+
     public static function FirstOrder()
     {
-        return self::where(['name' => 'FirstOrder'])->first();
+       return self::findByName('FirstOrder');
     }
 
     public static function NewOrderStatus()
     {
-        return self::where(['name' => 'New'])->first();
+        return self::findByName('New');
     }
 
     public static function PaymentUploaded()
     {
-        return self::where(['name' => 'Payment_Uploaded'])->first();
+        return self::findByName('Payment_Uploaded');
     }
 
     public static function Approved()
     {
-        return self::where(['name' => 'Approved'])->first();
+        return self::findByName('Approved');
     }
 
     public static function Rejected()
     {
-        return self::where(['name' => 'Rejected'])->first();
+        return self::findByName('Rejected');
     }
 
     public static function Shipped()
     {
-        return self::where(['name' => 'Shipped'])->first();
+        return self::findByName('Shipped');
     }
 
     public static function Received()
     {
-        return self::where(['name' => 'Received'])->first();
+        return self::findByName('Received');
     }
 
     public static function Draft()
     {
-        return self::where(['name' => 'Draft'])->first();
+        return self::findByName('Draft');
     }
 }
