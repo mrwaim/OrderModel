@@ -112,6 +112,7 @@ class Product extends Model
 
     public static function DropshipMembership()
     {
+        // TODO: Deprecate
         return self::forSite()
             ->where('name', 'Dropship membership')
             ->first();
