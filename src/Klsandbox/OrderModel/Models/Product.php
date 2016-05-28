@@ -75,6 +75,9 @@ class Product extends Model
         return $this->name == 'Other';
     }
 
+    /**
+     * @return Product
+     */
     public static function Restock()
     {
         return self::forSite()->where('name', '=', 'Restock')->first();

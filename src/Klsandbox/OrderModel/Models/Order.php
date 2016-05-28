@@ -132,12 +132,6 @@ class Order extends Model
         return $this->belongsTo(App\Models\Customer::class);
     }
 
-    // Deprecated
-    public function productPricing()
-    {
-        return $this->belongsTo(ProductPricing::class);
-    }
-
     public function orderStatus()
     {
         return $this->belongsTo(OrderStatus::class);
@@ -151,6 +145,11 @@ class Order extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(App\Models\Organization::class);
     }
 
     public function isApproved()
