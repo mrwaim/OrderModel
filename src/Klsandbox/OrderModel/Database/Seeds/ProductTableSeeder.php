@@ -20,7 +20,7 @@ class ProductTableSeeder extends Seeder
     public function runForSite($siteId)
     {
         $this->addProduct($siteId, 'Restock', 'Restock', BonusCategory::Basic()->id);
-        $this->addProduct($siteId, 'Dropship Order', 'Dropship Order', null);
+        $this->addProduct($siteId, 'Dropship Order', 'Dropship Order', BonusCategory::bioKare()->id);
     }
 
     public function addProduct($siteId, $name, $description, $bonusCategoryId)
