@@ -66,6 +66,8 @@ class Product extends Model
         'is_hq',
         'for_customer',
         'new_user',
+        'is_membership',
+        'membership_group_id',
     ];
 
     use \Klsandbox\SiteModel\SiteExtensions;
@@ -134,9 +136,10 @@ class Product extends Model
     public static function DropshipMembershipForStockist()
     {
         assert(\Auth::user()->access()->stockist);
+
         // TODO: Deprecate
         return self::forSite()
-            ->where('name', 'Dropship membership')
+            ->where('name', 'BioKare Membership Promo for GSK')
             ->first();
     }
 
