@@ -3,8 +3,10 @@
 namespace Klsandbox\OrderModel\Models;
 
 use App\Models\BonusCategory;
+use App\Models\Group;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Klsandbox\RoleModel\Role;
 use Klsandbox\SiteModel\Site;
 
@@ -52,8 +54,19 @@ use Klsandbox\SiteModel\Site;
  */
 class Product extends Model
 {
-    protected $fillable = ['name', 'image', 'description', 'bonus_category_id', 'min_quantity', 'max_quantity',
-        'is_available', 'hidden_from_ordering', 'is_hq', 'for_customer', 'new_user', ];
+    protected $fillable = [
+        'name',
+        'image',
+        'description',
+        'bonus_category_id',
+        'min_quantity',
+        'max_quantity',
+        'is_available',
+        'hidden_from_ordering',
+        'is_hq',
+        'for_customer',
+        'new_user',
+    ];
 
     use \Klsandbox\SiteModel\SiteExtensions;
 
@@ -88,6 +101,11 @@ class Product extends Model
         return self::forSite()->where('name', '=', 'Dropship Order')->first();
     }
 
+    public function MembershipGroup()
+    {
+        return $this->belongsTo(Group::class, 'membership_group_id');
+    }
+
     public function bonusCategory()
     {
         return $this->belongsTo(BonusCategory::class);
@@ -113,8 +131,9 @@ class Product extends Model
 
     // Model
 
-    public static function DropshipMembership()
+    public static function DropshipMembershipForStockist()
     {
+        assert(\Auth::user()->access()->stockist);
         // TODO: Deprecate
         return self::forSite()
             ->where('name', 'Dropship membership')
