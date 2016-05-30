@@ -6,7 +6,6 @@ use App\Models\BonusCategory;
 use App\Models\Group;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use Klsandbox\RoleModel\Role;
 use Klsandbox\SiteModel\Site;
 
@@ -51,6 +50,17 @@ use Klsandbox\SiteModel\Site;
  * @property boolean $is_hq
  *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereIsHq($value)
+ *
+ * @property boolean $for_customer
+ * @property boolean $new_user
+ * @property boolean $is_membership
+ * @property integer $membership_group_id
+ * @property-read \App\Models\Group $MembershipGroup
+ *
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereForCustomer($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereNewUser($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereIsMembership($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMembershipGroupId($value)
  */
 class Product extends Model
 {
@@ -328,5 +338,16 @@ class Product extends Model
         return $this->productPricing()->whereHas('groups', function ($query) use ($group) {
             $query->where('group_product_pricing.group_id', '=', $group->id);
         })->first();
+    }
+
+    public static function findByName($name, $strict = true)
+    {
+        $item = self::forSite()->where('name', '=', $name)->first();
+        
+        if (!$item && $strict) {
+            \App::abort(503, 'product not found ' . $name);
+        }
+
+        return $item;
     }
 }

@@ -14,4 +14,5 @@ interface OrderManager
     public function createFirstOrder($proofOfTransfer, array $productPricingIdHash, array $quantityHash);
     public function createRestockOrder($proofOfTransfer, $draft, array $productPricingIdHash, array $quantityHash, $customer = null);
     public function setPaymentUploaded($order);
+    public function getOrderList(&$filter, $user);
 }

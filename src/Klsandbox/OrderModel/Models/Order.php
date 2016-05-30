@@ -60,6 +60,10 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @mixin \Eloquent
  *
  * @property-read \App\Models\Customer $customer
+ * @property integer $organization_id
+ * @property-read \App\Models\Organization $organization
+ *
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereOrganizationId($value)
  */
 class Order extends Model
 {

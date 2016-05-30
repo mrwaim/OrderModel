@@ -19,11 +19,12 @@ class ProductTableSeeder extends Seeder
 
     public function runForSite($siteId)
     {
-        $this->addProduct($siteId, 'Restock', 'Restock', BonusCategory::Basic()->id);
-        $this->addProduct($siteId, 'Dropship Order', 'Dropship Order', BonusCategory::bioKare()->id);
+        $this->addProduct($siteId, 'Restock', 'Restock', BonusCategory::Basic()->id, false);
+        $this->addProduct($siteId, 'Stockist Membership', 'Stockist Membership', BonusCategory::Basic()->id, true);
+        $this->addProduct($siteId, 'Dropship Order', 'Dropship Order', BonusCategory::bioKare()->id, false);
     }
 
-    public function addProduct($siteId, $name, $description, $bonusCategoryId)
+    public function addProduct($siteId, $name, $description, $bonusCategoryId, $newUser)
     {
         $match = Product::forSite()->where('name', '=', $name)->get();
         if (count($match) > 0) {
@@ -37,6 +38,7 @@ class ProductTableSeeder extends Seeder
             'is_available' => true,
             'hidden_from_ordering' => false,
             'bonus_category_id' => $bonusCategoryId,
+            'new_user' => $newUser,
         ));
     }
 }
