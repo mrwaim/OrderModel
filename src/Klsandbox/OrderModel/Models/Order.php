@@ -189,9 +189,13 @@ class Order extends Model
      */
     public static function whereNotFulfilled($query)
     {
-        return $query->where(function ($q) {
-            $q->where('order_status_id', '<>', OrderStatus::Shipped()->id);
+        $ret = $query->where(function ($q) {
+            $q->where('order_status_id', '<>', OrderStatus::Shipped()->id)
+                ->Where('order_status_id', '<>', OrderStatus::PaymentUploaded()->id)
+                ->Where('order_status_id', '<>', OrderStatus::NewOrderStatus()->id);
         });
+
+        return $ret;
     }
 
     /**
