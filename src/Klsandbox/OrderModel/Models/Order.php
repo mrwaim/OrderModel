@@ -67,8 +67,7 @@ class Order extends Model
         parent::boot();
 
         self::creating(function (Order $item) {
-            $item->user_id = Auth::user()->id;
-
+            
             if (!$item->order_status_id) {
                 App::abort(500, 'invalid order_status_id');
             }
@@ -92,6 +91,7 @@ class Order extends Model
         'proof_of_transfer_id',
         'customer_id',
         'organization_id',
+        'user_id',
     ];
 
     public function info()

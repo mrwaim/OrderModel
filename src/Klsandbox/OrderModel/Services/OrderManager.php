@@ -2,6 +2,7 @@
 
 namespace Klsandbox\OrderModel\Services;
 
+use App\Models\User;
 use Klsandbox\OrderModel\Models\Order;
 
 interface OrderManager
@@ -11,8 +12,8 @@ interface OrderManager
     public function shipOrder(Order $order, $trackingId);
     public function orderCreated(Order $order);
     public function cancelOrder(Order $order);
-    public function createFirstOrder($proofOfTransfer, array $productPricingIdHash, array $quantityHash);
-    public function createRestockOrder($proofOfTransfer, $draft, array $productPricingIdHash, array $quantityHash, $customer = null);
+    public function createFirstOrder(User $user, $proofOfTransfer, array $productPricingIdHash, array $quantityHash);
+    public function createRestockOrder(User $user, $proofOfTransfer, $draft, array $productPricingIdHash, array $quantityHash, $customer = null);
     public function setPaymentUploaded($order);
     public function getOrderList(&$filter, $user);
 }
