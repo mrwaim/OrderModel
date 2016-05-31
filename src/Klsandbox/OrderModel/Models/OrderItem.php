@@ -2,6 +2,7 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App\Models\User;
 use App\Scopes\OrderItemScope;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\BonusModel\Models\BonusStatus;
@@ -86,5 +87,10 @@ class OrderItem extends Model
     public function productPricing()
     {
         return $this->belongsTo(\Klsandbox\OrderModel\Models\ProductPricing::class);
+    }
+
+    public function awardedUser()
+    {
+        return $this->belongsTo(User::class);
     }
 }
