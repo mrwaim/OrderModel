@@ -18,7 +18,6 @@ use Klsandbox\RoleModel\Role;
  * @property integer $site_id
  * @property-read \Klsandbox\OrderModel\Models\Product $product
  * @property-read \Klsandbox\RoleModel\Role $role
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereUpdatedAt($value)
@@ -26,23 +25,15 @@ use Klsandbox\RoleModel\Role;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereProductId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing wherePrice($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereSiteId($value)
- *
  * @property string $sku
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Group[] $groups
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereSku($value)
  * @mixin \Eloquent
- *
  * @property float $price_east
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing wherePriceEast($value)
- *
  * @property float $delivery
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereDelivery($value)
- *
  * @property float $delivery_east
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereDeliveryEast($value)
  */
 class ProductPricing extends Model

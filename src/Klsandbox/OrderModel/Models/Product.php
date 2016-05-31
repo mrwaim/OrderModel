@@ -21,7 +21,6 @@ use Klsandbox\SiteModel\Site;
  * @property string $image
  * @property boolean $is_available
  * @property boolean $hidden_from_ordering
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereSiteId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereCreatedAt($value)
@@ -31,32 +30,22 @@ use Klsandbox\SiteModel\Site;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereImage($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereIsAvailable($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereHiddenFromOrdering($value)
- *
  * @property integer $bonus_category_id
  * @property-read \Klsandbox\OrderModel\Models\ProductPricing $productPricing
  * @property-read \App\Models\BonusCategory $bonusCategory
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereBonusCategoryId($value)
  * @mixin \Eloquent
- *
  * @property integer $max_quantity
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMaxQuantity($value)
- *
  * @property integer $min_quantity
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMinQuantity($value)
- *
  * @property boolean $is_hq
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereIsHq($value)
- *
  * @property boolean $for_customer
  * @property boolean $new_user
  * @property boolean $is_membership
  * @property integer $membership_group_id
  * @property-read \App\Models\Group $MembershipGroup
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereForCustomer($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereNewUser($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereIsMembership($value)
@@ -78,7 +67,7 @@ class Product extends Model
         'new_user',
         'is_membership',
         'membership_group_id',
-        'award_parent'
+        'award_parent',
     ];
 
     use \Klsandbox\SiteModel\SiteExtensions;

@@ -20,7 +20,6 @@ use Klsandbox\BonusModel\Models\BonusStatus;
  * @property-read \App\Models\Order $order
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Bonus[] $bonuses
  * @property-read \Klsandbox\OrderModel\Models\ProductPricing $productPricing
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereOrderId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereProductPricingId($value)
@@ -30,13 +29,9 @@ use Klsandbox\BonusModel\Models\BonusStatus;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereProductPrice($value)
  * @mixin \Eloquent
- *
  * @property float $delivery
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereDelivery($value)
- *
  * @property integer $organization_id
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereOrganizationId($value)
  */
 class OrderItem extends Model

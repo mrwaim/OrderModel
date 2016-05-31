@@ -26,7 +26,6 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @property integer $proof_of_transfer_id
  * @property string $payment_mode
  * @property string $approved_at
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereSiteId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereCreatedAt($value)
@@ -38,11 +37,8 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereProofOfTransferId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order wherePaymentMode($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereApprovedAt($value)
- *
  * @property float $price
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order wherePrice($value)
- *
  * @property string $shipped_at
  * @property integer $shipped_by_id
  * @property string $rejected_at
@@ -50,7 +46,6 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @property integer $approved_by_id
  * @property integer $customer_id
  * @property-read \Illuminate\Database\Eloquent\Collection|\Klsandbox\OrderModel\Models\OrderItem[] $orderItems
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereShippedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereShippedById($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereRejectedAt($value)
@@ -58,11 +53,9 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereApprovedById($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereCustomerId($value)
  * @mixin \Eloquent
- *
  * @property-read \App\Models\Customer $customer
  * @property integer $organization_id
  * @property-read \App\Models\Organization $organization
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereOrganizationId($value)
  */
 class Order extends Model

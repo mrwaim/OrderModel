@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $order_id
  * @property integer $order_status_id
  * @property integer $user_id
- *
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderStatusEvent whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderStatusEvent whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderStatusEvent whereUpdatedAt($value)
