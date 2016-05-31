@@ -78,6 +78,7 @@ class Product extends Model
         'new_user',
         'is_membership',
         'membership_group_id',
+        'award_parent'
     ];
 
     use \Klsandbox\SiteModel\SiteExtensions;

@@ -99,6 +99,7 @@ class Order extends Model
         'proof_of_transfer_id',
         'customer_id',
         'organization_id',
+        'awarded_user_id'
     ];
 
     public function info()
