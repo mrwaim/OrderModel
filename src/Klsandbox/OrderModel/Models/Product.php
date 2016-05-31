@@ -340,10 +340,16 @@ class Product extends Model
         })->first();
     }
 
+    /**
+     * @param $name
+     * @param bool $strict
+     *
+     * @return Product
+     */
     public static function findByName($name, $strict = true)
     {
         $item = self::forSite()->where('name', '=', $name)->first();
-        
+
         if (!$item && $strict) {
             \App::abort(503, 'product not found ' . $name);
         }

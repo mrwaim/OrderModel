@@ -3,6 +3,7 @@
 namespace Klsandbox\OrderModel\Database\Seeds;
 
 use App\Models\BonusCategory;
+use App\Models\Group;
 use Illuminate\Database\Seeder;
 use Klsandbox\OrderModel\Models\Product;
 use Klsandbox\SiteModel\Site;
@@ -19,12 +20,14 @@ class ProductTableSeeder extends Seeder
 
     public function runForSite($siteId)
     {
-        $this->addProduct($siteId, 'Restock', 'Restock', BonusCategory::Basic()->id, false);
-        $this->addProduct($siteId, 'Stockist Membership', 'Stockist Membership', BonusCategory::Basic()->id, true);
-        $this->addProduct($siteId, 'Dropship Order', 'Dropship Order', BonusCategory::bioKare()->id, false);
+        $this->addProduct($siteId, 'Restock', 'Restock', BonusCategory::Basic()->id, false, false, null);
+        $stockistGroup = Group::StockistGStarGroup();
+        assert($stockistGroup, '$stockistGroup');
+        $this->addProduct($siteId, 'Stockist Membership', 'Stockist Membership', BonusCategory::Basic()->id, true, false, $stockistGroup);
+        $this->addProduct($siteId, 'Dropship Order', 'Dropship Order', BonusCategory::bioKare()->id, false, true, null);
     }
 
-    public function addProduct($siteId, $name, $description, $bonusCategoryId, $newUser)
+    public function addProduct($siteId, $name, $description, $bonusCategoryId, $newUser, $forCustomer, $membershipGroup)
     {
         $match = Product::forSite()->where('name', '=', $name)->get();
         if (count($match) > 0) {
@@ -39,6 +42,9 @@ class ProductTableSeeder extends Seeder
             'hidden_from_ordering' => false,
             'bonus_category_id' => $bonusCategoryId,
             'new_user' => $newUser,
+            'for_customer' => $forCustomer,
+            'is_membership' => (bool) $membershipGroup,
+            'membership_group_id' => $membershipGroup ? $membershipGroup->id : null,
         ));
     }
 }
