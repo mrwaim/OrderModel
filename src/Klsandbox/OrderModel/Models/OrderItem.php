@@ -34,6 +34,9 @@ use Klsandbox\BonusModel\Models\BonusStatus;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereDelivery($value)
  * @property integer $organization_id
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereOrganizationId($value)
+ * @property integer $awarded_user_id
+ * @property-read \App\Models\User $awardedUser
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereAwardedUserId($value)
  */
 class OrderItem extends Model
 {

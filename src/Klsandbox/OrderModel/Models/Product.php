@@ -50,6 +50,8 @@ use Klsandbox\SiteModel\Site;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereNewUser($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereIsMembership($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMembershipGroupId($value)
+ * @property boolean $award_parent
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereAwardParent($value)
  */
 class Product extends Model
 {
