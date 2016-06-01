@@ -56,7 +56,7 @@ class OrderItem extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            assert($model->product_price);
+//            assert($model->product_price);
         });
 
         static::addGlobalScope(new OrderItemScope());
