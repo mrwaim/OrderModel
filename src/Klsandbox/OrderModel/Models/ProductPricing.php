@@ -35,6 +35,9 @@ use Klsandbox\RoleModel\Role;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereDelivery($value)
  * @property float $delivery_east
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereDeliveryEast($value)
+ * @property integer $group_id
+ * @property-read \App\Models\Group $group
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductPricing whereGroupId($value)
  */
 class ProductPricing extends Model
 {
@@ -50,6 +53,7 @@ class ProductPricing extends Model
         'price_east',
         'delivery',
         'delivery_east',
+        'group_id',
     ];
 
     public function product()
@@ -67,9 +71,9 @@ class ProductPricing extends Model
         return self::where('product_id', '=', Product::Restock()->id)->first()->id;
     }
 
-    public function groups()
+    public function group()
     {
-        return $this->belongsToMany(\App\Models\Group::class, 'group_product_pricing');
+        return $this->belongsTo(\App\Models\Group::class);
     }
 
     public function getPriceAndDelivery($user, $customer, &$price, &$delivery)

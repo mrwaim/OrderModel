@@ -57,6 +57,8 @@ use Klsandbox\OrderModel\Services\OrderManager;
  * @property integer $organization_id
  * @property-read \App\Models\Organization $organization
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereOrganizationId($value)
+ * @property boolean $is_hq
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereIsHq($value)
  */
 class Order extends Model
 {
@@ -92,6 +94,7 @@ class Order extends Model
         'customer_id',
         'organization_id',
         'user_id',
+        'is_hq',
     ];
 
     public function info()

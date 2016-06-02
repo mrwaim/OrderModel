@@ -58,7 +58,7 @@ class ProofOfTransfer extends Model
             Log::info('Move ' . $newFileName);
         }
 
-        return self::proofOfTransferFromRequestWithoutImages($request, "img/user/$fileName", $request->totalAmount());
+        return self::proofOfTransferFromRequestWithoutImages($request, "img/user/$fileName", $request->totalAmount(), $request->isHq());
     }
 
     /**
@@ -67,9 +67,9 @@ class ProofOfTransfer extends Model
      *
      * @return ProofOfTransfer
      */
-    public static function proofOfTransferFromRequestWithoutImages($request, $fileName, $amount)
+    public static function proofOfTransferFromRequestWithoutImages($request, $fileName, $amount, $isHq)
     {
-        if (!Auth::user()->referral_id) {
+        if (!Auth::user()->referral_id && !Auth::user()->new_referral_id) {
             App::abort(500, 'Invalid user');
         }
 
@@ -88,7 +88,17 @@ class ProofOfTransfer extends Model
         $proofOfTransfers->user_id = Auth::user()->id;
         $proofOfTransfers->notes = $request->notes;
         $proofOfTransfers->order_notes = $request->order_notes;
-        $proofOfTransfers->receiver_user_id = Auth::user()->referral_id;
+
+        if ($isHq)
+        {
+            $proofOfTransfers->receiver_user_id = App\Models\User::admin()->id;
+        }
+        else
+        {
+            assert(Auth::user()->organization);
+            $proofOfTransfers->receiver_user_id = Auth::user()->organization->admin->id;
+        }
+
 
         if ($fileName) {
             $proofOfTransfers->image = $fileName;

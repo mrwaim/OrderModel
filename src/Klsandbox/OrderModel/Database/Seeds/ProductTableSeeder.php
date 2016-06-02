@@ -20,21 +20,21 @@ class ProductTableSeeder extends Seeder
 
     public function runForSite($siteId)
     {
-        $this->addProduct($siteId, 'Restock', 'Restock', BonusCategory::Basic()->id, false, false, null);
+        $this->addProduct($siteId, 'Restock', 'Restock', BonusCategory::Basic()->id, false, false, null, true);
         $stockistGroup = Group::StockistGStarGroup();
         assert($stockistGroup, '$stockistGroup');
-        $this->addProduct($siteId, 'Stockist Membership', 'Stockist Membership', BonusCategory::Basic()->id, true, false, $stockistGroup);
-        $this->addProduct($siteId, 'Dropship Order', 'Dropship Order', BonusCategory::bioKare()->id, false, true, null);
+        $this->addProduct($siteId, 'Stockist Membership', 'Stockist Membership', BonusCategory::Basic()->id, true, false, $stockistGroup, true);
+        $this->addProduct($siteId, 'Dropship Order', 'Dropship Order', BonusCategory::bioKare()->id, false, true, null, false);
     }
 
-    public function addProduct($siteId, $name, $description, $bonusCategoryId, $newUser, $forCustomer, $membershipGroup)
+    public function addProduct($siteId, $name, $description, $bonusCategoryId, $newUser, $forCustomer, $membershipGroup, $isHq)
     {
         $match = Product::forSite()->where('name', '=', $name)->get();
         if (count($match) > 0) {
             return;
         }
 
-        Product::create(array(
+        return Product::create(array(
             'name' => $name,
             'description' => $description,
             'image' => null,
@@ -45,6 +45,7 @@ class ProductTableSeeder extends Seeder
             'for_customer' => $forCustomer,
             'is_membership' => (bool) $membershipGroup,
             'membership_group_id' => $membershipGroup ? $membershipGroup->id : null,
+            'is_hq' => $isHq,
         ));
     }
 }

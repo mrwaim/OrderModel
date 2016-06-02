@@ -209,8 +209,8 @@ class Product extends Model
                 $product_price->delivery = $group['delivery'];
                 $product_price->delivery_east = $group['delivery_east'];
                 $product_price->site_id = Site::id();
+                $product_price->group_id = $group['group_id'];
                 $product_price->save();
-                $product_price->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
             }
         }
 
@@ -271,8 +271,8 @@ class Product extends Model
                     $productPricing->role_id = Role::Stockist()->id;
                     $productPricing->product_id = $product->id;
                     $productPricing->site_id = Site::id();
+                    $productPricing->group_id = $group['group_id'];
                     $productPricing->save();
-                    $productPricing->groups()->attach($group['group_id'], ['created_at' => new Carbon(), 'updated_at' => new Carbon()]);
                 } else {
                     $productPricing = ProductPricing::find($group['product_pricing_id']);
                 }
@@ -293,29 +293,12 @@ class Product extends Model
 
                         // check product pricing is exist
                         if ($productPricing) {
-                            $productPricing->groups()->sync([]);
                             $productPricing->delete();
                         }
                     }
                 }
             }
         }
-    }
-
-    public function updateProduct($input)
-    {
-        $productPricing->price = $inputs['price'];
-        $productPricing->save();
-
-        if ($inputs['group_id']) {
-            $productPricing->groups()->sync([$inputs['group_id']]);
-        } else {
-            $productPricing->groups()->sync([]);
-        }
-
-        $inputs = array_except($inputs, ['group_id', 'price', '_token']);
-
-        $productPricing->product->update($inputs);
     }
 
     public function setUnavailable($id)
@@ -327,9 +310,7 @@ class Product extends Model
 
     public function pricingForGroup($group)
     {
-        return $this->productPricing()->whereHas('groups', function ($query) use ($group) {
-            $query->where('group_product_pricing.group_id', '=', $group->id);
-        })->first();
+        return $this->productPricing()->where('group_id', '=', $group->id)->first();
     }
 
     /**
