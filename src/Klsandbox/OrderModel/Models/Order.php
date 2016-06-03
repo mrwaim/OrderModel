@@ -76,10 +76,6 @@ class Order extends Model
 
             return true;
         });
-
-        self::created(function (Order $order) {
-            App::make(OrderManager::class)->orderCreated($order);
-        });
     }
 
     protected $table = 'orders';

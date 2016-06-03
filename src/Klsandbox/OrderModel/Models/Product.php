@@ -117,6 +117,7 @@ class Product extends Model
 
     public static function OtherPricingId()
     {
+        assert(config('order.allow_other_product'));
         return self::forSite()
             ->where('name', 'Other')
             ->first()

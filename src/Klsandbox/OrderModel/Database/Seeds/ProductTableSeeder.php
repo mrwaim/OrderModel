@@ -20,10 +20,10 @@ class ProductTableSeeder extends Seeder
 
     public function runForSite($siteId)
     {
-        $this->addProduct($siteId, 'Restock', 'Restock', BonusCategory::Basic()->id, false, false, null, true);
+        $this->addProduct($siteId, 'Restock', 'Restock', BonusCategory::gStar()->id, false, false, null, true);
         $stockistGroup = Group::StockistGStarGroup();
         assert($stockistGroup, '$stockistGroup');
-        $this->addProduct($siteId, 'Stockist Membership', 'Stockist Membership', BonusCategory::Basic()->id, true, false, $stockistGroup, true);
+        $this->addProduct($siteId, 'Stockist Membership', 'Stockist Membership', BonusCategory::gStar()->id, true, false, $stockistGroup, true);
         $this->addProduct($siteId, 'Dropship Order', 'Dropship Order', BonusCategory::bioKare()->id, false, true, null, false);
     }
 
