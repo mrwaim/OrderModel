@@ -5,7 +5,6 @@ namespace Klsandbox\OrderModel\Models;
 use App;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
-use Klsandbox\OrderModel\Services\OrderManager;
 
 /**
  * Klsandbox\OrderModel\Models\Order
@@ -69,7 +68,7 @@ class Order extends Model
         parent::boot();
 
         self::creating(function (Order $item) {
-            
+
             if (!$item->order_status_id) {
                 App::abort(500, 'invalid order_status_id');
             }

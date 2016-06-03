@@ -89,16 +89,12 @@ class ProofOfTransfer extends Model
         $proofOfTransfers->notes = $request->notes;
         $proofOfTransfers->order_notes = $request->order_notes;
 
-        if ($isHq)
-        {
+        if ($isHq) {
             $proofOfTransfers->receiver_user_id = App\Models\User::admin()->id;
-        }
-        else
-        {
+        } else {
             assert(Auth::user()->organization);
             $proofOfTransfers->receiver_user_id = Auth::user()->organization->admin->id;
         }
-
 
         if ($fileName) {
             $proofOfTransfers->image = $fileName;

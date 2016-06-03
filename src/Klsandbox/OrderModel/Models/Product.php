@@ -4,7 +4,6 @@ namespace Klsandbox\OrderModel\Models;
 
 use App\Models\BonusCategory;
 use App\Models\Group;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\RoleModel\Role;
 use Klsandbox\SiteModel\Site;
@@ -118,6 +117,7 @@ class Product extends Model
     public static function OtherPricingId()
     {
         assert(config('order.allow_other_product'));
+
         return self::forSite()
             ->where('name', 'Other')
             ->first()
