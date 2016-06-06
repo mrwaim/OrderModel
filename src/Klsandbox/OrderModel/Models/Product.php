@@ -96,12 +96,12 @@ class Product extends Model
      */
     public static function Restock()
     {
-        return self::forSite()->where('name', '=', 'Restock')->first();
+        return self::forSite()->where('name', '=', 'GStar Kids A')->first();
     }
 
     public static function DropShipOrder()
     {
-        return self::forSite()->where('name', '=', 'Dropship Order')->first();
+        return self::forSite()->where('name', '=', 'BioKare One (Dropship)')->first();
     }
 
     public function MembershipGroup()
