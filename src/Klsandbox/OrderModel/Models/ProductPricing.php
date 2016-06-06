@@ -87,7 +87,6 @@ class ProductPricing extends Model
                 $delivery = $this->delivery;
             }
         } else {
-            $user = auth()->user();
             if ($user->pricingArea() == 'east') {
                 $price = $this->price_east;
                 $delivery = $this->delivery_east;

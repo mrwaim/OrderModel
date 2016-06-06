@@ -68,7 +68,7 @@ class ProofOfTransfer extends Model
      */
     public static function proofOfTransferFromRequestWithoutImages(App\Models\User $user, $request, $fileName, $amount, $isHq)
     {
-        if (!$user->referral_id && !$user->new_referral_id) {
+        if (!$user->isAdmin() && !$user->referral_id && !$user->new_referral_id) {
             App::abort(500, 'Invalid user');
         }
 
