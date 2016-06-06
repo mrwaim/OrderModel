@@ -2,7 +2,6 @@
 
 namespace Klsandbox\OrderModel\Models;
 
-use Auth;
 use Klsandbox\BillplzRoute\Models\BillplzResponse;
 use Log;
 use Illuminate\Database\Eloquent\Model;
@@ -45,20 +44,20 @@ class ProofOfTransfer extends Model
     public $timestamps = true;
     protected $fillable = ['bank_name', 'image', 'amount', 'user_id', 'receiver_user_id', 'notes', 'payment_mode'];
 
-    public static function createFromInput(App\Http\Requests\OrderPostRequest $request)
+    public static function createFromInput(App\Models\User $user, App\Http\Requests\OrderPostRequest $request)
     {
         $fileName = null;
         $newFileName = null;
         if ($request->file('image')) {
             $originalFileName = $request->file('image')->getClientOriginalName();
 
-            $fileName = 'upload_' . Auth::user()->id . mt_rand() . '.' . pathinfo($originalFileName, PATHINFO_EXTENSION);
+            $fileName = 'upload_' . $user->id . mt_rand() . '.' . pathinfo($originalFileName, PATHINFO_EXTENSION);
 
             $newFileName = $request->file('image')->move(public_path('img/user'), $fileName);
             Log::info('Move ' . $newFileName);
         }
 
-        return self::proofOfTransferFromRequestWithoutImages($request, "img/user/$fileName", $request->totalAmount(), $request->isHq());
+        return self::proofOfTransferFromRequestWithoutImages($user, $request, "img/user/$fileName", $request->totalAmount(), $request->isHq());
     }
 
     /**
@@ -67,9 +66,9 @@ class ProofOfTransfer extends Model
      *
      * @return ProofOfTransfer
      */
-    public static function proofOfTransferFromRequestWithoutImages($request, $fileName, $amount, $isHq)
+    public static function proofOfTransferFromRequestWithoutImages(App\Models\User $user, $request, $fileName, $amount, $isHq)
     {
-        if (!Auth::user()->referral_id && !Auth::user()->new_referral_id) {
+        if (!$user->referral_id && !$user->new_referral_id) {
             App::abort(500, 'Invalid user');
         }
 
@@ -83,17 +82,19 @@ class ProofOfTransfer extends Model
             $proofOfTransfers->bank_name = $proofOfTransfers->payment_mode;
         }
 
+        assert($amount > 0);
+
         $proofOfTransfers->amount = $amount;
 
-        $proofOfTransfers->user_id = Auth::user()->id;
+        $proofOfTransfers->user_id = $user->id;
         $proofOfTransfers->notes = $request->notes;
         $proofOfTransfers->order_notes = $request->order_notes;
 
         if ($isHq) {
             $proofOfTransfers->receiver_user_id = App\Models\User::admin()->id;
         } else {
-            assert(Auth::user()->organization);
-            $proofOfTransfers->receiver_user_id = Auth::user()->organization->admin->id;
+            assert($user->organization);
+            $proofOfTransfers->receiver_user_id = $user->organization->admin->id;
         }
 
         if ($fileName) {

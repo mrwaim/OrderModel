@@ -182,6 +182,8 @@ class Order extends Model
     {
         $ret = $query->where(function ($q) {
             $q->where('order_status_id', '<>', OrderStatus::Shipped()->id)
+                ->Where('order_status_id', '<>', OrderStatus::FirstOrder()->id)
+                ->Where('order_status_id', '<>', OrderStatus::Rejected()->id)
                 ->Where('order_status_id', '<>', OrderStatus::PaymentUploaded()->id)
                 ->Where('order_status_id', '<>', OrderStatus::NewOrderStatus()->id);
         });
