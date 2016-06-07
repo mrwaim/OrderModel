@@ -37,6 +37,7 @@ use App;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereOrderNotes($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer wherePaymentMode($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\User $receiver
  */
 class ProofOfTransfer extends Model
 {
@@ -57,7 +58,7 @@ class ProofOfTransfer extends Model
             Log::info('Move ' . $newFileName);
         }
 
-        return self::proofOfTransferFromRequestWithoutImages($user, $request, "img/user/$fileName", $request->totalAmount(), $request->isHq());
+        return self::proofOfTransferFromRequestWithoutImages($user, $request, "img/user/$fileName", $request->totalAmount(), $request->isHq(), $request->hasOrganizationMembership());
     }
 
     /**
@@ -66,7 +67,7 @@ class ProofOfTransfer extends Model
      *
      * @return ProofOfTransfer
      */
-    public static function proofOfTransferFromRequestWithoutImages(App\Models\User $user, $request, $fileName, $amount, $isHq)
+    public static function proofOfTransferFromRequestWithoutImages(App\Models\User $user, $request, $fileName, $amount, $isHq, $isMembership)
     {
         if (!$user->isAdmin() && !$user->referral_id && !$user->new_referral_id) {
             App::abort(500, 'Invalid user');
@@ -93,8 +94,19 @@ class ProofOfTransfer extends Model
         if ($isHq) {
             $proofOfTransfers->receiver_user_id = App\Models\User::admin()->id;
         } else {
-            assert($user->organization);
-            $proofOfTransfers->receiver_user_id = $user->organization->admin->id;
+            assert($user->organization || $isMembership);
+            if ($isMembership && !$user->organization)
+            {
+                // HACKHACK This will set receiver_user_id to admin - in RaniaDropshipMembershipOrderManager
+                // We will undo this, and reset receiver_user_id to PL
+                // Unit test this!
+
+                $proofOfTransfers->receiver_user_id = App\Models\User::admin()->id;
+            }
+            else
+            {
+                $proofOfTransfers->receiver_user_id = $user->organization->admin->id;
+            }
         }
 
         if ($fileName) {
@@ -115,4 +127,11 @@ class ProofOfTransfer extends Model
     {
         return $this->hasOne(config('order.order_model'));
     }
+
+    public function receiver()
+    {
+        return $this->belongsTo(App\Models\User::class, 'receiver_user_id');
+    }
+
+
 }
