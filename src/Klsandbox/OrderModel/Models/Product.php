@@ -143,7 +143,8 @@ class Product extends Model
         // TODO: Deprecate
         return self::forSite()
             ->where('name', 'BioKare Membership Promo for GSK')
-            ->first();
+            ->orWhere('name', 'BioKare Membership for GSK')
+            ->get();
     }
 
     /**
