@@ -9,12 +9,26 @@ use Klsandbox\OrderModel\Models\ProofOfTransfer;
 interface OrderManager
 {
     public function approveOrder(Order $order, $approved_at = null);
+
     public function rejectOrder(Order $order);
+
     public function shipOrder(Order $order, $trackingId);
+
     public function orderCreated(Order $order);
+
     public function cancelOrder(Order $order);
+
+    /**
+    * @return Order
+    */
     public function createFirstOrder(User $user, ProofOfTransfer $proofOfTransfer, array $productPricingIdHash, array $quantityHash, $isHq);
+
+    /**
+    * @return Order
+    */
     public function createRestockOrder(User $user, ProofOfTransfer $proofOfTransfer, $draft, array $productPricingIdHash, array $quantityHash, $isHq, $customer = null);
+
     public function setPaymentUploaded($order);
+
     public function getOrderList(&$filter, $user);
 }
