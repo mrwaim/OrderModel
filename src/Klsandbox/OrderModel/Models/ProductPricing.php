@@ -66,11 +66,6 @@ class ProductPricing extends Model
         return $this->belongsTo(\Klsandbox\RoleModel\Role::class);
     }
 
-    public static function RestockPricingId()
-    {
-        return self::where('product_id', '=', Product::Restock()->id)->first()->id;
-    }
-
     public function group()
     {
         return $this->belongsTo(\App\Models\Group::class);
