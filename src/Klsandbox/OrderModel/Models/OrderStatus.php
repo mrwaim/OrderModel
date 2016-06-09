@@ -36,6 +36,10 @@ class OrderStatus extends Model
         }
     }
 
+    /**
+     * @param $name
+     * @return OrderStatus
+     */
     private static function findByName($name)
     {
         self::updateCache();
