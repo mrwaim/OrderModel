@@ -90,15 +90,7 @@ class Product extends Model
     {
         return $this->name == 'Other';
     }
-
-    /**
-     * @return Product
-     */
-    public static function Restock()
-    {
-        return self::forSite()->where('name', '=', 'GStar Kids A')->first();
-    }
-
+    
     public static function DropShipOrder()
     {
         return self::forSite()->where('name', '=', 'BioKare One (Dropship)')->first();
