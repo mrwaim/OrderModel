@@ -134,6 +134,14 @@ class Product extends Model
             ->get();
     }
 
+    public static function getAllProductList()
+    {
+        return self::forSite()
+            ->with('productPricing')
+            ->with('bonusCategory')
+            ->get();
+    }
+
     // Model
 
     public static function DropshipMembershipForStockist()
