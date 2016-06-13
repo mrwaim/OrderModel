@@ -106,8 +106,7 @@ class ProofOfTransfer extends Model
             else
             {
                 assert($user->organization);
-                assert($user->organization->admin);
-                $proofOfTransfers->receiver_user_id = $user->organization->admin->id;
+                $proofOfTransfers->receiver_user_id = $user->organization->admin_id;
             }
         }
 
