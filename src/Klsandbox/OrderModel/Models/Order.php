@@ -229,11 +229,11 @@ class Order extends Model
 
     public function canApproveState()
     {
-        return $this->order_status_id < 4 || $this->order_status_id > 7;
+        return $this->order_status_id < OrderStatus::Approved()->id;
     }
 
     public function canShipState()
     {
-        return $this->order_status_id == 4 && $this->tracking_id == '';
+        return $this->order_status_id == OrderStatus::Approved()->id && $this->tracking_id == '';
     }
 }
