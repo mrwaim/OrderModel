@@ -8,7 +8,7 @@ use Klsandbox\OrderModel\Models\ProofOfTransfer;
 
 interface OrderManager
 {
-    public function approveOrder(Order $order, $approved_at = null);
+    public function approveOrder(User $user, Order $order, $approved_at = null);
 
     public function rejectOrder(Order $order);
 
