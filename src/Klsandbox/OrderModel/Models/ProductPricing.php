@@ -2,7 +2,6 @@
 
 namespace Klsandbox\OrderModel\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\RoleModel\Role;
 

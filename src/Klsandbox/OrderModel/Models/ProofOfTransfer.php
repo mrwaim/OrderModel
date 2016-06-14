@@ -104,16 +104,13 @@ class ProofOfTransfer extends Model
             $proofOfTransfers->receiver_user_id = App\Models\User::admin()->id;
         } else {
             assert($user->organization || $isMembership);
-            if ($isMembership && !$user->organization)
-            {
+            if ($isMembership && !$user->organization) {
                 // HACKHACK This will set receiver_user_id to admin - in RaniaDropshipMembershipOrderManager
                 // We will undo this, and reset receiver_user_id to PL
                 // Unit test this!
 
                 $proofOfTransfers->receiver_user_id = App\Models\User::admin()->id;
-            }
-            else
-            {
+            } else {
                 assert($user->organization);
                 $proofOfTransfers->receiver_user_id = $user->organization->admin_id;
             }
@@ -142,6 +139,4 @@ class ProofOfTransfer extends Model
     {
         return $this->belongsTo(App\Models\User::class, 'receiver_user_id');
     }
-
-
 }

@@ -19,13 +19,13 @@ interface OrderManager
     public function cancelOrder(Order $order);
 
     /**
-    * @return Order
-    */
+     * @return Order
+     */
     public function createFirstOrder(User $user, ProofOfTransfer $proofOfTransfer, array $productPricingIdHash, array $quantityHash, $isHq);
 
     /**
-    * @return Order
-    */
+     * @return Order
+     */
     public function createRestockOrder(User $user, ProofOfTransfer $proofOfTransfer, $draft, array $productPricingIdHash, array $quantityHash, $isHq, $customer = null);
 
     public function setPaymentUploaded($order);

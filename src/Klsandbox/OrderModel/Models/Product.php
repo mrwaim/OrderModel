@@ -90,7 +90,7 @@ class Product extends Model
     {
         return $this->name == 'Other';
     }
-    
+
     public static function DropShipOrder()
     {
         return self::forSite()->where('name', '=', 'BioKare One (Dropship)')->first();
