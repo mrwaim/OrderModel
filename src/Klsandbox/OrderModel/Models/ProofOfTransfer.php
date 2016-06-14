@@ -43,7 +43,7 @@ class ProofOfTransfer extends Model
 {
     protected $table = 'proof_of_transfers';
     public $timestamps = true;
-    protected $fillable = ['bank_name', 'image', 'amount', 'user_id', 'receiver_user_id', 'notes', 'payment_mode'];
+    protected $fillable = ['bank_name', 'image', 'amount', 'user_id', 'receiver_user_id', 'notes', 'payment_mode', 'date_transfer', 'time_transfer'];
 
     public static function createFromInput(App\Models\User $user, App\Http\Requests\OrderPostRequest $request)
     {
@@ -81,6 +81,15 @@ class ProofOfTransfer extends Model
             $proofOfTransfers->bank_name = $request->bank_name;
         } else {
             $proofOfTransfers->bank_name = $proofOfTransfers->payment_mode;
+        }
+
+        // date transfer
+        if ($request->has('date_transfer')) {
+            $proofOfTransfers->date_transfer = $request->input('date_transfer');
+        }
+
+        if ($request->has('time_transfer')) {
+            $proofOfTransfers->time_transfer = $request->input('time_transfer');
         }
 
         assert($amount > 0);
