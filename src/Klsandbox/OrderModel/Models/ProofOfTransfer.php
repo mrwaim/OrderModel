@@ -88,12 +88,14 @@ class ProofOfTransfer extends Model
         }
 
         // date transfer
-        if ($request->has('date_transfer')) {
-            $proofOfTransfers->date_transfer = $request->input('date_transfer');
+        if ($request->date_transfer)
+        {
+            $proofOfTransfers->date_transfer = $request->date_transfer;
         }
 
-        if ($request->has('time_transfer')) {
-            $proofOfTransfers->time_transfer = $request->input('time_transfer');
+        if ($request->time_transfer)
+        {
+            $proofOfTransfers->time_transfer = $request->time_transfer;
         }
 
         assert($amount > 0);
