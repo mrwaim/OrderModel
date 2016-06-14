@@ -38,6 +38,10 @@ use App;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer wherePaymentMode($value)
  * @mixin \Eloquent
  * @property-read \App\Models\User $receiver
+ * @property string $date_transfer
+ * @property string $time_transfer
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereDateTransfer($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereTimeTransfer($value)
  */
 class ProofOfTransfer extends Model
 {
