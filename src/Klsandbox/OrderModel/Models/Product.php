@@ -306,6 +306,9 @@ class Product extends Model
     public function setUnavailable($id)
     {
         $product = self::find($id);
+
+        assert($product);
+
         $product->is_available = false;
         $product->save();
     }
