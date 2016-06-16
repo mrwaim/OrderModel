@@ -30,5 +30,5 @@ interface OrderManager
 
     public function setPaymentUploaded($order);
 
-    public function getOrderList(&$filter, $user);
+    public function getOrderList(&$filter, $subFilter, $user);
 }
