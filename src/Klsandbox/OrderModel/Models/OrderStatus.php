@@ -22,6 +22,8 @@ class OrderStatus extends Model
     protected $table = 'order_statuses';
     public $timestamps = true;
 
+    protected $fillable = ['name'];
+
     private static $cache = null;
 
     private static function updateCache()
@@ -85,5 +87,10 @@ class OrderStatus extends Model
     public static function Draft()
     {
         return self::findByName('Draft');
+    }
+
+    public static function Cancelled()
+    {
+        return self::findByName('Cancelled');
     }
 }

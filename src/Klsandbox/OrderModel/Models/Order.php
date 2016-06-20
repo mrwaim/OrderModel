@@ -58,6 +58,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereOrganizationId($value)
  * @property boolean $is_hq
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereIsHq($value)
+ * @property string $bill_url
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereBillUrl($value)
  */
 class Order extends Model
 {
@@ -185,6 +187,7 @@ class Order extends Model
                 ->Where('order_status_id', '<>', OrderStatus::FirstOrder()->id)
                 ->Where('order_status_id', '<>', OrderStatus::Rejected()->id)
                 ->Where('order_status_id', '<>', OrderStatus::PaymentUploaded()->id)
+                ->Where('order_status_id', '<>', OrderStatus::Cancelled()->id)
                 ->Where('order_status_id', '<>', OrderStatus::NewOrderStatus()->id);
         });
 

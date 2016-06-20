@@ -49,7 +49,7 @@ class ProofOfTransfer extends Model
     public $timestamps = true;
     protected $fillable = ['bank_name', 'image', 'amount', 'user_id', 'receiver_user_id', 'notes', 'payment_mode', 'date_transfer', 'time_transfer'];
 
-    public static function createFromInput(App\Models\User $user, App\Http\Requests\OrderPostRequest $request)
+    public static function createFromInput(App\Models\User $user, App\Http\Requests\OrderPostRequest $request, App\Services\ProductPricingManager\ProductPricingManagerInterface $productPricingManager, $customer = null)
     {
         $fileName = null;
         $newFileName = null;
@@ -61,8 +61,10 @@ class ProofOfTransfer extends Model
             $newFileName = $request->file('image')->move(public_path('img/user'), $fileName);
             Log::info('Move ' . $newFileName);
         }
+        
+        $hasOrganizationMembership = $productPricingManager->hasOrganizationMembership($request->getProductPricing());
 
-        return self::proofOfTransferFromRequestWithoutImages($user, $request, "img/user/$fileName", $request->totalAmount(), $request->isHq(), $request->hasOrganizationMembership());
+        return self::proofOfTransferFromRequestWithoutImages($user, $request, "img/user/$fileName", $request->totalAmount($customer), $request->isHq(), $hasOrganizationMembership);
     }
 
     /**

@@ -25,5 +25,6 @@ class OrderStatusTableSeeder extends Seeder
         $this->createIfNotExists('Rejected');
         $this->createIfNotExists('Received');
         $this->createIfNotExists('Draft');
+        $this->createIfNotExists('Cancelled');
     }
 }
