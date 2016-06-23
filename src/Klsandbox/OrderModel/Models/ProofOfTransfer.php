@@ -61,7 +61,7 @@ class ProofOfTransfer extends Model
             $newFileName = $request->file('image')->move(public_path('img/user'), $fileName);
             Log::info('Move ' . $newFileName);
         }
-        
+
         $hasOrganizationMembership = $productPricingManager->hasOrganizationMembership($request->getProductPricing());
 
         return self::proofOfTransferFromRequestWithoutImages($user, $request, "img/user/$fileName", $request->totalAmount($customer), $request->isHq(), $hasOrganizationMembership);
@@ -90,13 +90,11 @@ class ProofOfTransfer extends Model
         }
 
         // date transfer
-        if ($request->date_transfer)
-        {
+        if ($request->date_transfer) {
             $proofOfTransfers->date_transfer = $request->date_transfer;
         }
 
-        if ($request->time_transfer)
-        {
+        if ($request->time_transfer) {
             $proofOfTransfers->time_transfer = $request->time_transfer;
         }
 
