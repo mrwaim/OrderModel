@@ -145,4 +145,10 @@ class ProofOfTransfer extends Model
     {
         return $this->belongsTo(App\Models\User::class, 'receiver_user_id');
     }
+
+    //Mutator
+    public function setDateTransferAttribute($value)
+    {
+        $this->attributes['date_transfer'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
+    }
 }
