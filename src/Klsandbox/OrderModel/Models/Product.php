@@ -4,6 +4,7 @@ namespace Klsandbox\OrderModel\Models;
 
 use App\Models\BonusCategory;
 use App\Models\Group;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\RoleModel\Role;
 use Klsandbox\SiteModel\Site;
@@ -69,6 +70,7 @@ class Product extends Model
         'is_membership',
         'membership_group_id',
         'award_parent',
+        'expiry_date'
     ];
 
     use \Klsandbox\SiteModel\SiteExtensions;
@@ -183,22 +185,15 @@ class Product extends Model
      * create new product when group is enabled
      *
      * @param array $input
+     * @return Product
      */
     public function createProductGroupEnabled(array $input)
     {
         $product = new self();
 
-        $product->name = $input['name'];
-        $product->description = $input['description'];
+        $product->fill($input);
         $product->is_available = true;
-        $product->hidden_from_ordering = false;
         $product->site_id = Site::id();
-        $product->image = $input['image'];
-        $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
-        $product->is_hq = $input['is_hq'];
-        $product->for_customer = $input['for_customer'];
-        $product->new_user = $input['new_user'];
-        $product->hidden_from_ordering = $input['hidden_from_ordering'];
         $product->save();
 
         foreach ($input['groups'] as $group) {
@@ -227,16 +222,7 @@ class Product extends Model
      */
     public function updateProductGroupDisabled(Product $product, array $input)
     {
-        $product->name = $input['name'];
-        $product->description = $input['description'];
-        $product->is_hq = $input['is_hq'];
-        $product->for_customer = $input['for_customer'];
-        $product->new_user = $input['new_user'];
-        $product->hidden_from_ordering = $input['hidden_from_ordering'];
-
-        isset($input['image']) ? $product->image = $input['image'] : '';
-
-        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->fill($input);
         $product->save();
 
         $product->productPricing()->update([
@@ -247,19 +233,13 @@ class Product extends Model
     /**
      * update existing product when group is disabled
      *
+     * @param Product $product
      * @param array $input
+     * @throws \Exception
      */
     public function updateProductGroupEnabled(Product $product, array $input)
     {
-        $product->name = $input['name'];
-        $product->description = $input['description'];
-        $product->is_hq = $input['is_hq'];
-        isset($input['image']) ? $product->image = $input['image'] : '';
-        $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
-        $product->is_hq = $input['is_hq'];
-        $product->for_customer = $input['for_customer'];
-        $product->new_user = $input['new_user'];
-        $product->hidden_from_ordering = $input['hidden_from_ordering'];
+        $product->fill($input);
         $product->save();
 
         foreach ($input['groups'] as $group) {
@@ -333,5 +313,18 @@ class Product extends Model
         }
 
         return $item;
+    }
+
+    //Accessor
+    public function getExpiryDateAttribute()
+    {
+        $date = Carbon::createFromFormat('Y-m-d', $this->attributes['expiry_date']);
+        return $date->format('d/m/Y');
+    }
+
+    //Mutator
+    public function setExpiryDateAttribute($value)
+    {
+        $this->attributes['expiry_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
     }
 }
