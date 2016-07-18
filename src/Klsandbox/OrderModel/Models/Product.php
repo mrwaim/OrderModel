@@ -322,6 +322,11 @@ class Product extends Model
     //Accessor
     public function getExpiryDateAttribute()
     {
+        if (!$this->attributes['expiry_date'])
+        {
+            return null;
+        }
+        
         $date = Carbon::createFromFormat('Y-m-d', $this->attributes['expiry_date']);
         return $date->format('d/m/Y');
     }
