@@ -86,6 +86,12 @@ class Product extends Model
         return $this->hasMany(ProductPricing::class);
     }
 
+    public function units()
+    {
+        return $this->belongsToMany(ProductUnit::class, 'products_product_units', 'product_id', 'product_unit_id')
+            ->withPivot(['quantity']);
+    }
+
     public function isOtherProduct()
     {
         return $this->name == 'Other';
