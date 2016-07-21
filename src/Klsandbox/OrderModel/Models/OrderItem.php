@@ -2,6 +2,7 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App\Models\Organization;
 use App\Models\User;
 use App\Scopes\OrderItemScope;
 use Illuminate\Database\Eloquent\Model;
@@ -95,5 +96,10 @@ class OrderItem extends Model
     public function awardedUser()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
     }
 }
