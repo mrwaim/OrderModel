@@ -56,6 +56,7 @@ use Klsandbox\SiteModel\Site;
  * @property string $expiry_date
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMaxPurchaseCount($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereExpiryDate($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Klsandbox\OrderModel\Models\ProductUnit[] $units
  */
 class Product extends Model
 {
