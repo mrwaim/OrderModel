@@ -6,7 +6,6 @@ use App\Models\BonusCategory;
 use App\Models\Group;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\RoleModel\Role;
-use Klsandbox\SiteModel\Site;
 
 /**
  * Klsandbox\OrderModel\Models\Product
@@ -71,8 +70,6 @@ class Product extends Model
         'award_parent',
     ];
 
-    use \Klsandbox\SiteModel\SiteExtensions;
-
     protected $table = 'products';
     public $timestamps = true;
 
@@ -93,7 +90,7 @@ class Product extends Model
 
     public static function DropShipOrder()
     {
-        return self::forSite()->where('name', '=', 'BioKare One (Dropship)')->first();
+        return self::where('name', '=', 'BioKare One (Dropship)')->first();
     }
 
     public function MembershipGroup()
@@ -110,8 +107,7 @@ class Product extends Model
     {
         assert(config('order.allow_other_product'));
 
-        return self::forSite()
-            ->where('name', 'Other')
+        return self::where('name', 'Other')
             ->first()
             ->productPricing
             ->id;
@@ -119,8 +115,7 @@ class Product extends Model
 
     public static function getAvailableProductList()
     {
-        return self::forSite()
-            ->where('products.is_available', true)
+        return self::where('products.is_available', true)
             ->with('productPricing')
             ->with('bonusCategory')
             ->get();
@@ -128,8 +123,7 @@ class Product extends Model
 
     public static function getAllProductList()
     {
-        return self::forSite()
-            ->with('productPricing')
+        return self::with('productPricing')
             ->with('bonusCategory')
             ->get();
     }
@@ -141,8 +135,7 @@ class Product extends Model
         assert(\Auth::user()->access()->stockist);
 
         // TODO: Deprecate
-        return self::forSite()
-            ->where('name', 'BioKare Membership Promo for GSK')
+        return self::where('name', 'BioKare Membership Promo for GSK')
             ->orWhere('name', 'BioKare Membership for GSK')
             ->get();
     }
@@ -160,7 +153,6 @@ class Product extends Model
         $product->description = $input['description'];
         $product->is_available = true;
         $product->hidden_from_ordering = false;
-        $product->site_id = Site::id();
         $product->image = $input['image'];
         $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->is_hq = $input['is_hq'];
@@ -173,7 +165,6 @@ class Product extends Model
         $product_price->role_id = Role::Stockist()->id;
         $product_price->product_id = $product->id;
         $product_price->price = $input['price'];
-        $product_price->site_id = Site::id();
         $product_price->save();
 
         return $product;
@@ -192,7 +183,6 @@ class Product extends Model
         $product->description = $input['description'];
         $product->is_available = true;
         $product->hidden_from_ordering = false;
-        $product->site_id = Site::id();
         $product->image = $input['image'];
         $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
         $product->is_hq = $input['is_hq'];
@@ -210,7 +200,6 @@ class Product extends Model
                 $product_price->price_east = $group['price_east'];
                 $product_price->delivery = $group['delivery'];
                 $product_price->delivery_east = $group['delivery_east'];
-                $product_price->site_id = Site::id();
                 $product_price->group_id = $group['group_id'];
                 $product_price->save();
             }
@@ -247,6 +236,7 @@ class Product extends Model
     /**
      * update existing product when group is disabled
      *
+     * @param Product $product
      * @param array $input
      */
     public function updateProductGroupEnabled(Product $product, array $input)
@@ -272,7 +262,6 @@ class Product extends Model
                     $productPricing = new ProductPricing();
                     $productPricing->role_id = Role::Stockist()->id;
                     $productPricing->product_id = $product->id;
-                    $productPricing->site_id = Site::id();
                     $productPricing->group_id = $group['group_id'];
                     $productPricing->save();
                 } else {
@@ -326,7 +315,7 @@ class Product extends Model
      */
     public static function findByName($name, $strict = true)
     {
-        $item = self::forSite()->where('name', '=', $name)->first();
+        $item = self::where('name', '=', $name)->first();
 
         if (!$item && $strict) {
             \App::abort(503, 'product not found ' . $name);

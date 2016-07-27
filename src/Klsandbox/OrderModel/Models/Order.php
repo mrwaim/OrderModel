@@ -63,7 +63,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Order extends Model
 {
-    use \Klsandbox\SiteModel\SiteExtensions;
     use App\Models\Traits\OrganizationTrait;
 
     public static function boot()
