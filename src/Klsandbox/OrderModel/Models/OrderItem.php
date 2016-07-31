@@ -2,6 +2,7 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App\Models\Organization;
 use App\Models\User;
 use App\Scopes\OrderItemScope;
 use Illuminate\Database\Eloquent\Model;
@@ -37,6 +38,7 @@ use Klsandbox\BonusModel\Models\BonusStatus;
  * @property integer $awarded_user_id
  * @property-read \App\Models\User $awardedUser
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereAwardedUserId($value)
+ * @property-read \App\Models\Organization $organization
  */
 class OrderItem extends Model
 {
@@ -95,5 +97,10 @@ class OrderItem extends Model
     public function awardedUser()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
     }
 }

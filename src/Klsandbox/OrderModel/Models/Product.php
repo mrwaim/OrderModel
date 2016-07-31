@@ -4,6 +4,7 @@ namespace Klsandbox\OrderModel\Models;
 
 use App\Models\BonusCategory;
 use App\Models\Group;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Klsandbox\RoleModel\Role;
 
@@ -50,6 +51,11 @@ use Klsandbox\RoleModel\Role;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMembershipGroupId($value)
  * @property boolean $award_parent
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereAwardParent($value)
+ * @property integer $max_purchase_count
+ * @property string $expiry_date
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMaxPurchaseCount($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereExpiryDate($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Klsandbox\OrderModel\Models\ProductUnit[] $units
  */
 class Product extends Model
 {
@@ -68,6 +74,7 @@ class Product extends Model
         'is_membership',
         'membership_group_id',
         'award_parent',
+        'expiry_date'
     ];
 
     protected $table = 'products';
@@ -81,6 +88,12 @@ class Product extends Model
         }
 
         return $this->hasMany(ProductPricing::class);
+    }
+
+    public function units()
+    {
+        return $this->belongsToMany(ProductUnit::class, 'products_product_units', 'product_id', 'product_unit_id')
+            ->withPivot(['quantity']);
     }
 
     public function isOtherProduct()
@@ -174,21 +187,14 @@ class Product extends Model
      * create new product when group is enabled
      *
      * @param array $input
+     * @return Product
      */
     public function createProductGroupEnabled(array $input)
     {
         $product = new self();
 
-        $product->name = $input['name'];
-        $product->description = $input['description'];
+        $product->fill($input);
         $product->is_available = true;
-        $product->hidden_from_ordering = false;
-        $product->image = $input['image'];
-        $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
-        $product->is_hq = $input['is_hq'];
-        $product->for_customer = $input['for_customer'];
-        $product->new_user = $input['new_user'];
-        $product->hidden_from_ordering = $input['hidden_from_ordering'];
         $product->save();
 
         foreach ($input['groups'] as $group) {
@@ -216,16 +222,7 @@ class Product extends Model
      */
     public function updateProductGroupDisabled(Product $product, array $input)
     {
-        $product->name = $input['name'];
-        $product->description = $input['description'];
-        $product->is_hq = $input['is_hq'];
-        $product->for_customer = $input['for_customer'];
-        $product->new_user = $input['new_user'];
-        $product->hidden_from_ordering = $input['hidden_from_ordering'];
-
-        isset($input['image']) ? $product->image = $input['image'] : '';
-
-        $product->bonus_categories_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
+        $product->fill($input);
         $product->save();
 
         $product->productPricing()->update([
@@ -238,18 +235,11 @@ class Product extends Model
      *
      * @param Product $product
      * @param array $input
+     * @throws \Exception
      */
     public function updateProductGroupEnabled(Product $product, array $input)
     {
-        $product->name = $input['name'];
-        $product->description = $input['description'];
-        $product->is_hq = $input['is_hq'];
-        isset($input['image']) ? $product->image = $input['image'] : '';
-        $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
-        $product->is_hq = $input['is_hq'];
-        $product->for_customer = $input['for_customer'];
-        $product->new_user = $input['new_user'];
-        $product->hidden_from_ordering = $input['hidden_from_ordering'];
+        $product->fill($input);
         $product->save();
 
         foreach ($input['groups'] as $group) {
@@ -322,5 +312,23 @@ class Product extends Model
         }
 
         return $item;
+    }
+
+    //Accessor
+    public function getExpiryDateAttribute()
+    {
+        if (!$this->attributes['expiry_date'])
+        {
+            return null;
+        }
+        
+        $date = Carbon::createFromFormat('Y-m-d', $this->attributes['expiry_date']);
+        return $date->format('d/m/Y');
+    }
+
+    //Mutator
+    public function setExpiryDateAttribute($value)
+    {
+        $this->attributes['expiry_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
     }
 }
