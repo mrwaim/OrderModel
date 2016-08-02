@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Klsandbox\OrderModel\Models\ProductPricing $productPricing
  * @property-read \Klsandbox\OrderModel\Models\OrderStatus $orderStatus
  * @property-read \Klsandbox\OrderModel\Models\ProofOfTransfer $proofOfTransfer
- * @property integer $site_id
  * @property integer $id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -25,7 +24,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $proof_of_transfer_id
  * @property string $payment_mode
  * @property string $approved_at
- * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereSiteId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereUpdatedAt($value)
