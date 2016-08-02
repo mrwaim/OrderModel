@@ -77,6 +77,10 @@ class Product extends Model
         'expiry_date'
     ];
 
+    protected $dates = [
+        'expiry_date'
+    ];
+
     protected $table = 'products';
     public $timestamps = true;
 
@@ -193,11 +197,14 @@ class Product extends Model
     {
         $product = new self();
 
+        $groups = $input['groups'];
+        unset($input['groups']);
         $product->fill($input);
         $product->is_available = true;
+
         $product->save();
 
-        foreach ($input['groups'] as $group) {
+        foreach ($groups as $group) {
             if (isset($group['price']) && $group['price'] > 0) {
                 $product_price = new ProductPricing();
                 $product_price->role_id = Role::Stockist()->id;
@@ -239,6 +246,16 @@ class Product extends Model
      */
     public function updateProductGroupEnabled(Product $product, array $input)
     {
+        $expiry = $input['expiry_date'];
+        if ($expiry && preg_match('/^\d+\/\d+\/\d+/', $expiry)) {
+            $expiry = Carbon::createFromFormat('d/m/Y', $expiry);
+            $input['expiry_date'] = $expiry;
+        } elseif ($expiry && preg_match('/^\d+-\d+-\d+ \d+:\d+:\d+/', $expiry)) {
+            $input['expiry_date'] = $expiry;
+        } else {
+            $input['expiry_date'] = null;
+        }
+
         $product->fill($input);
         $product->save();
 
@@ -312,23 +329,5 @@ class Product extends Model
         }
 
         return $item;
-    }
-
-    //Accessor
-    public function getExpiryDateAttribute()
-    {
-        if (!$this->attributes['expiry_date'])
-        {
-            return null;
-        }
-        
-        $date = Carbon::createFromFormat('Y-m-d', $this->attributes['expiry_date']);
-        return $date->format('d/m/Y');
-    }
-
-    //Mutator
-    public function setExpiryDateAttribute($value)
-    {
-        $this->attributes['expiry_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
     }
 }
