@@ -88,11 +88,14 @@ class Product extends Model
         'is_membership',
         'membership_group_id',
         'award_parent',
-        'expiry_date'
-    ];
-
-    protected $dates = [
-        'expiry_date'
+        'max_purchase_count',
+        'expiry_date',
+        'role_id',
+        'price',
+        'price_east',
+        'delivery',
+        'delivery_east',
+        'group_id'
     ];
 
     protected $table = 'products';
@@ -178,11 +181,6 @@ class Product extends Model
         $product->save();
     }
 
-    public function pricingForGroup($group)
-    {
-        return $this->productPricing()->where('group_id', '=', $group->id)->first();
-    }
-
     /**
      * @param $name
      * @param bool $strict
@@ -219,5 +217,23 @@ class Product extends Model
                 $delivery = $this->delivery;
             }
         }
+    }
+
+    //Accessor
+     public function getExpiryDateAttribute()
+     {
+         if (!$this->attributes['expiry_date'])
+         {
+             return null;
+         }
+
+         $date = Carbon::createFromFormat('Y-m-d', $this->attributes['expiry_date']);
+         return $date->format('d/m/Y');
+     }
+
+     //Mutator
+     public function setExpiryDateAttribute($value)
+     {
+        $this->attributes['expiry_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
     }
 }
