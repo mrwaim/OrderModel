@@ -21,26 +21,26 @@ interface OrderManager
     /**
      * @param User $user
      * @param ProofOfTransfer $proofOfTransfer
-     * @param array $productPricingIdHash
+     * @param array $products
      * @param array $quantityHash
      * @param $isHq
      * @param $isPickup
      * @return Order
      */
-    public function createFirstOrder(User $user, ProofOfTransfer $proofOfTransfer, array $productPricingIdHash, array $quantityHash, $isHq, $isPickup = false);
+    public function createFirstOrder(User $user, ProofOfTransfer $proofOfTransfer, array $products, array $quantityHash, $isHq, $isPickup = false);
 
     /**
      * @param User $user
      * @param ProofOfTransfer $proofOfTransfer
      * @param $draft
-     * @param array $productPricingIdHash
+     * @param array $products
      * @param array $quantityHash
      * @param $isHq
      * @param null $customer
      * @param boolean $isPickup
      * @return Order
      */
-    public function createRestockOrder(User $user, ProofOfTransfer $proofOfTransfer, $draft, array $productPricingIdHash, array $quantityHash, $isHq, $customer = null, $isPickup = false);
+    public function createRestockOrder(User $user, ProofOfTransfer $proofOfTransfer, $draft, array $products, array $quantityHash, $isHq, $customer = null, $isPickup = false);
 
     public function setPaymentUploaded($order);
 

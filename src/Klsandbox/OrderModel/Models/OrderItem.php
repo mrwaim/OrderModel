@@ -39,6 +39,9 @@ use Klsandbox\BonusModel\Models\BonusStatus;
  * @property-read \App\Models\User $awardedUser
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereAwardedUserId($value)
  * @property-read \App\Models\Organization $organization
+ * @property integer $product_id
+ * @property-read \Klsandbox\OrderModel\Models\Product $product
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereProductId($value)
  */
 class OrderItem extends Model
 {
@@ -84,14 +87,10 @@ class OrderItem extends Model
         return $this->bonuses()->getQuery()->where('bonus_status_id', '=', BonusStatus::Active()->id);
     }
 
-    /**
-     * Relationship with `product_pricings` table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function productPricing()
+
+    public function product()
     {
-        return $this->belongsTo(\Klsandbox\OrderModel\Models\ProductPricing::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function awardedUser()
