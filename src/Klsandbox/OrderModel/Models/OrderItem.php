@@ -87,10 +87,14 @@ class OrderItem extends Model
         return $this->bonuses()->getQuery()->where('bonus_status_id', '=', BonusStatus::Active()->id);
     }
 
-
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function productPricing()
+    {
+        return $this->belongsTo(ProductPricing::class);
     }
 
     public function awardedUser()
