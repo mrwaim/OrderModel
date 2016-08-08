@@ -84,7 +84,7 @@ class Order extends Model
         'updated_at',
         'tracking_id',
         'order_status_id',
-        'product_pricing_id',
+        'product_id',
         'proof_of_transfer_id',
         'customer_id',
         'organization_id',
@@ -96,11 +96,11 @@ class Order extends Model
     public function info()
     {
         $products = implode(',', $this->orderItems->map(function ($e) {
-            return $e->productPricing->product->name;
+            return $e->product->name;
         })->toArray());
 
         $bonusCategory = implode(',', $this->orderItems->map(function ($e) {
-            return $e->productPricing->product->bonusCategory->name;
+            return $e->product->bonusCategory->name;
         })->toArray());
 
         return "id:$this->id status:{$this->orderStatus->name} product:$products bonusCategory:$bonusCategory";

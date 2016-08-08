@@ -56,6 +56,20 @@ use Klsandbox\RoleModel\Role;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereMaxPurchaseCount($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereExpiryDate($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\Klsandbox\OrderModel\Models\ProductUnit[] $units
+ * @property integer $role_id
+ * @property float $price
+ * @property float $price_east
+ * @property float $delivery
+ * @property float $delivery_east
+ * @property integer $group_id
+ * @property-read \App\Models\Group $group
+ * @property-read \Klsandbox\RoleModel\Role $role
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereRoleId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product wherePrice($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product wherePriceEast($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereDelivery($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereDeliveryEast($value)
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Product whereGroupId($value)
  */
 class Product extends Model
 {
@@ -74,24 +88,22 @@ class Product extends Model
         'is_membership',
         'membership_group_id',
         'award_parent',
-        'expiry_date'
-    ];
-
-    protected $dates = [
-        'expiry_date'
+        'max_purchase_count',
+        'expiry_date',
+        'role_id',
+        'price',
+        'price_east',
+        'delivery',
+        'delivery_east',
+        'group_id'
     ];
 
     protected $table = 'products';
     public $timestamps = true;
 
-    // Relation
-    public function productPricing()
+    public function group()
     {
-        if (!config('group.enabled')) {
-            return $this->hasOne(ProductPricing::class);
-        }
-
-        return $this->hasMany(ProductPricing::class);
+        return $this->belongsTo(Group::class);
     }
 
     public function units()
@@ -120,28 +132,30 @@ class Product extends Model
         return $this->belongsTo(BonusCategory::class);
     }
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
     public static function OtherPricingId()
     {
         assert(config('order.allow_other_product'));
 
         return self::where('name', 'Other')
             ->first()
-            ->productPricing
             ->id;
     }
 
     public static function getAvailableProductList()
     {
         return self::where('products.is_available', true)
-            ->with('productPricing')
             ->with('bonusCategory')
             ->get();
     }
 
     public static function getAllProductList()
     {
-        return self::with('productPricing')
-            ->with('bonusCategory')
+        return self::with('bonusCategory')
             ->get();
     }
 
@@ -157,148 +171,6 @@ class Product extends Model
             ->get();
     }
 
-    /**
-     * create new product when group is disabled
-     *
-     * @param array $input
-     */
-    public function createProductGroupDisabled(array $input)
-    {
-        $product = new self();
-
-        $product->name = $input['name'];
-        $product->description = $input['description'];
-        $product->is_available = true;
-        $product->hidden_from_ordering = false;
-        $product->image = $input['image'];
-        $product->bonus_category_id = $input['bonus_categories_id'] ? $input['bonus_categories_id'] : null;
-        $product->is_hq = $input['is_hq'];
-        $product->for_customer = $input['for_customer'];
-        $product->new_user = $input['new_user'];
-        $product->hidden_from_ordering = $input['hidden_from_ordering'];
-        $product->save();
-
-        $product_price = new ProductPricing();
-        $product_price->role_id = Role::Stockist()->id;
-        $product_price->product_id = $product->id;
-        $product_price->price = $input['price'];
-        $product_price->save();
-
-        return $product;
-    }
-
-    /**
-     * create new product when group is enabled
-     *
-     * @param array $input
-     * @return Product
-     */
-    public function createProductGroupEnabled(array $input)
-    {
-        $product = new self();
-
-        $groups = $input['groups'];
-        unset($input['groups']);
-        $product->fill($input);
-        $product->is_available = true;
-
-        $product->save();
-
-        foreach ($groups as $group) {
-            if (isset($group['price']) && $group['price'] > 0) {
-                $product_price = new ProductPricing();
-                $product_price->role_id = Role::Stockist()->id;
-                $product_price->product_id = $product->id;
-                $product_price->price = $group['price'];
-                $product_price->price_east = $group['price_east'];
-                $product_price->delivery = $group['delivery'];
-                $product_price->delivery_east = $group['delivery_east'];
-                $product_price->group_id = $group['group_id'];
-                $product_price->save();
-            }
-        }
-
-        return $product;
-    }
-
-    /**
-     * update existing product when group is disabled
-     *
-     * @param Product $product
-     * @param array $input
-     */
-    public function updateProductGroupDisabled(Product $product, array $input)
-    {
-        $product->fill($input);
-        $product->save();
-
-        $product->productPricing()->update([
-            'price' => $input['price'],
-        ]);
-    }
-
-    /**
-     * update existing product when group is disabled
-     *
-     * @param Product $product
-     * @param array $input
-     * @throws \Exception
-     */
-    public function updateProductGroupEnabled(Product $product, array $input)
-    {
-        $expiry = $input['expiry_date'];
-        if ($expiry && preg_match('/^\d+\/\d+\/\d+/', $expiry)) {
-            $expiry = Carbon::createFromFormat('d/m/Y', $expiry);
-            $input['expiry_date'] = $expiry;
-        } elseif ($expiry && preg_match('/^\d+-\d+-\d+ \d+:\d+:\d+/', $expiry)) {
-            $input['expiry_date'] = $expiry;
-        } else {
-            $input['expiry_date'] = null;
-        }
-
-        $product->fill($input);
-        $product->save();
-
-        foreach ($input['groups'] as $group) {
-            $productPricing = null;
-
-            // if price is defined and not 0
-            if ((isset($group['price']) && $group['price'] > 0) && (isset($group['price_east']) && $group['price_east'] > 0)) {
-                //if not have product pricing then create one
-                if (!$group['product_pricing_id']) {
-                    $productPricing = new ProductPricing();
-                    $productPricing->role_id = Role::Stockist()->id;
-                    $productPricing->product_id = $product->id;
-                    $productPricing->group_id = $group['group_id'];
-                    $productPricing->save();
-                } else {
-                    $productPricing = ProductPricing::find($group['product_pricing_id']);
-                }
-
-                //update price
-                $productPricing->update([
-                    'price' => $group['price'] ? $group['price'] : null,
-                    'price_east' => $group['price_east'] ? $group['price_east'] : null,
-                    'delivery' => $group['delivery'] ? $group['delivery'] : null,
-                    'delivery_east' => $group['delivery_east'] ? $group['delivery_east'] : null,
-                ]);
-            } else {
-                // if price and price_east is not defined then delete it
-                if ((!isset($group['price']) || !$group['price']) && (!isset($group['price_east']) || !$group['price_east'])) {
-                    // if product pricing is existing in database, price is not defined or 0 then delete it
-                    if (isset($group['product_pricing_id']) && $group['product_pricing_id'] > 0) {
-                        $productPricing = ProductPricing::find($group['product_pricing_id']);
-
-                        // check product pricing is exist
-                        if ($productPricing) {
-                            $productPricing->delete();
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public function setUnavailable($id)
     {
         $product = self::find($id);
@@ -307,11 +179,6 @@ class Product extends Model
 
         $product->is_available = false;
         $product->save();
-    }
-
-    public function pricingForGroup($group)
-    {
-        return $this->productPricing()->where('group_id', '=', $group->id)->first();
     }
 
     /**
@@ -329,5 +196,44 @@ class Product extends Model
         }
 
         return $item;
+    }
+
+    public function getPriceAndDelivery($user, $customer, &$price, &$delivery)
+    {
+        if ($customer) {
+            if ($customer->pricingArea() == 'east') {
+                $price = $this->price_east;
+                $delivery = $this->delivery_east;
+            } else {
+                $price = $this->price;
+                $delivery = $this->delivery;
+            }
+        } else {
+            if ($user->pricingArea() == 'east') {
+                $price = $this->price_east;
+                $delivery = $this->delivery_east;
+            } else {
+                $price = $this->price;
+                $delivery = $this->delivery;
+            }
+        }
+    }
+
+    //Accessor
+     public function getExpiryDateAttribute()
+     {
+         if (!$this->attributes['expiry_date'])
+         {
+             return null;
+         }
+
+         $date = Carbon::createFromFormat('Y-m-d', $this->attributes['expiry_date']);
+         return $date->format('d/m/Y');
+     }
+
+     //Mutator
+     public function setExpiryDateAttribute($value)
+     {
+        $this->attributes['expiry_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
     }
 }

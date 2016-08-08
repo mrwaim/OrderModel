@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductUnit whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductUnit whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $sku
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProductUnit whereSku($value)
  */
 class ProductUnit extends Model
 {

@@ -2,6 +2,9 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App\Http\Requests\OrderPostRequest;
+use App\Models\User;
+use App\Services\ProductManager\ProductManagerInterface;
 use Klsandbox\BillplzRoute\Models\BillplzResponse;
 use Log;
 use Illuminate\Database\Eloquent\Model;
@@ -37,7 +40,7 @@ use App;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereOrderNotes($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer wherePaymentMode($value)
  * @mixin \Eloquent
- * @property-read \App\Models\User $receiver
+ * @property-read User $receiver
  * @property string $date_transfer
  * @property string $time_transfer
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereDateTransfer($value)
@@ -49,7 +52,7 @@ class ProofOfTransfer extends Model
     public $timestamps = true;
     protected $fillable = ['bank_name', 'image', 'amount', 'user_id', 'receiver_user_id', 'notes', 'payment_mode', 'date_transfer', 'time_transfer'];
 
-    public static function createFromInput(App\Models\User $user, App\Http\Requests\OrderPostRequest $request, App\Services\ProductPricingManager\ProductPricingManagerInterface $productPricingManager, $customer = null)
+    public static function createFromInput(User $user, OrderPostRequest $request, ProductManagerInterface $productManager, $customer = null)
     {
         $fileName = null;
         $newFileName = null;
@@ -62,18 +65,18 @@ class ProofOfTransfer extends Model
             Log::info('Move ' . $newFileName);
         }
 
-        $hasOrganizationMembership = $productPricingManager->hasOrganizationMembership($request->getProductPricing());
+        $hasOrganizationMembership = $productManager->hasOrganizationMembership($request->getProductPricing());
 
         return self::proofOfTransferFromRequestWithoutImages($user, $request, "img/user/$fileName", $request->totalAmount($customer), $request->isHq(), $hasOrganizationMembership);
     }
 
     /**
-     * @param App\Http\Requests\OrderPostRequest $request
+     * @param OrderPostRequest $request
      * @param $fileName
      *
      * @return ProofOfTransfer
      */
-    public static function proofOfTransferFromRequestWithoutImages(App\Models\User $user, $request, $fileName, $amount, $isHq, $isMembership)
+    public static function proofOfTransferFromRequestWithoutImages(User $user, $request, $fileName, $amount, $isHq, $isMembership)
     {
         if (!$user->isAdmin() && !$user->referral_id && !$user->new_referral_id) {
             App::abort(500, 'Invalid user');
@@ -107,7 +110,7 @@ class ProofOfTransfer extends Model
         $proofOfTransfers->order_notes = $request->order_notes;
 
         if ($isHq) {
-            $proofOfTransfers->receiver_user_id = App\Models\User::admin()->id;
+            $proofOfTransfers->receiver_user_id = User::admin()->id;
         } else {
             assert($user->organization || $isMembership);
             if ($isMembership && !$user->organization) {
@@ -115,7 +118,7 @@ class ProofOfTransfer extends Model
                 // We will undo this, and reset receiver_user_id to PL
                 // Unit test this!
 
-                $proofOfTransfers->receiver_user_id = App\Models\User::admin()->id;
+                $proofOfTransfers->receiver_user_id = User::admin()->id;
             } else {
                 assert($user->organization);
                 $proofOfTransfers->receiver_user_id = $user->organization->admin_id;
@@ -143,7 +146,7 @@ class ProofOfTransfer extends Model
 
     public function receiver()
     {
-        return $this->belongsTo(App\Models\User::class, 'receiver_user_id');
+        return $this->belongsTo(User::class, 'receiver_user_id');
     }
 
     //Mutator
