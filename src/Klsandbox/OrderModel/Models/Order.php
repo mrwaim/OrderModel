@@ -58,6 +58,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereIsHq($value)
  * @property string $bill_url
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereBillUrl($value)
+ * @property boolean $is_pickup
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereIsPickup($value)
  */
 class Order extends Model
 {
@@ -90,7 +92,8 @@ class Order extends Model
         'organization_id',
         'user_id',
         'is_hq',
-        'is_pickup'
+        'is_pickup',
+        'created_by_id'
     ];
 
     public function info()
