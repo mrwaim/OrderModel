@@ -60,6 +60,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereBillUrl($value)
  * @property boolean $is_pickup
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereIsPickup($value)
+ * @property integer $created_by_id
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\Order whereCreatedById($value)
  */
 class Order extends Model
 {
