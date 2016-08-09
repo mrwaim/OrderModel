@@ -95,7 +95,7 @@ class Product extends Model
         'price_east',
         'delivery',
         'delivery_east',
-        'group_id'
+        'group_id',
     ];
 
     protected $table = 'products';
@@ -222,18 +222,18 @@ class Product extends Model
     //Accessor
      public function getExpiryDateAttribute()
      {
-         if (!$this->attributes['expiry_date'])
-         {
-             return null;
+         if (!$this->attributes['expiry_date']) {
+             return;
          }
 
          $date = Carbon::createFromFormat('Y-m-d', $this->attributes['expiry_date']);
+
          return $date->format('d/m/Y');
      }
 
      //Mutator
      public function setExpiryDateAttribute($value)
      {
-        $this->attributes['expiry_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
-    }
+         $this->attributes['expiry_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
+     }
 }

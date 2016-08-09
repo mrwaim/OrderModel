@@ -93,7 +93,7 @@ class Order extends Model
         'user_id',
         'is_hq',
         'is_pickup',
-        'created_by_id'
+        'created_by_id',
     ];
 
     public function info()

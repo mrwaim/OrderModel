@@ -1,4 +1,6 @@
-<?php namespace Klsandbox\OrderModel\Models;
+<?php
+
+namespace Klsandbox\OrderModel\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
