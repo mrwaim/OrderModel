@@ -234,6 +234,8 @@ class Product extends Model
      //Mutator
      public function setExpiryDateAttribute($value)
      {
-         $this->attributes['expiry_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
+        if($value){
+            $this->attributes['expiry_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $value)));
+        }
      }
 }
