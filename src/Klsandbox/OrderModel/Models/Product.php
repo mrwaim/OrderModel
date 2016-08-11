@@ -109,7 +109,7 @@ class Product extends Model
     public function units()
     {
         return $this->belongsToMany(ProductUnit::class, 'products_product_units', 'product_id', 'product_unit_id')
-            ->withPivot(['quantity']);
+            ->withPivot(['quantity', 'quantity_east', 'quantity_pickup']);
     }
 
     public function isOtherProduct()
