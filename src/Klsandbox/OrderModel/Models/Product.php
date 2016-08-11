@@ -168,6 +168,9 @@ class Product extends Model
         // TODO: Deprecate
         return self::where('name', 'BioKare Membership Promo for GSK')
             ->orWhere('name', 'BioKare Membership for GSK')
+            ->orWhere('name', 'BioKare Membership for GSK')
+            ->orWhere('name', 'BioKare 15 (BioKare Membership)')
+            ->orWhere('name', 'BioKare 30 (BioKare Membership)')
             ->get();
     }
 
