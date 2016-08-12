@@ -24,10 +24,11 @@ interface OrderManager
      * @param array $products
      * @param array $quantityHash
      * @param $isHq
-     * @param $isPickup
+     * @param bool $isPickup
+     * @param $ipAddress
      * @return Order
      */
-    public function createFirstOrder(User $user, ProofOfTransfer $proofOfTransfer, array $products, array $quantityHash, $isHq, $isPickup = false);
+    public function createFirstOrder(User $user, ProofOfTransfer $proofOfTransfer, array $products, array $quantityHash, $isHq, $isPickup = false, $ipAddress);
 
     /**
      * @param User $user
@@ -38,9 +39,10 @@ interface OrderManager
      * @param $isHq
      * @param null $customer
      * @param boolean $isPickup
+     * @param $ipAddress
      * @return Order
      */
-    public function createRestockOrder(User $user, ProofOfTransfer $proofOfTransfer, $draft, array $products, array $quantityHash, $isHq, $customer = null, $isPickup = false);
+    public function createRestockOrder(User $user, ProofOfTransfer $proofOfTransfer, $draft, array $products, array $quantityHash, $isHq, $customer = null, $isPickup = false, $ipAddress);
 
     public function setPaymentUploaded($order);
 
