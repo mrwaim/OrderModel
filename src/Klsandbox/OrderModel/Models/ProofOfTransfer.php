@@ -101,6 +101,10 @@ class ProofOfTransfer extends Model
             $proofOfTransfers->time_transfer = $request->time_transfer;
         }
 
+        if ($request->is_public_order) {
+           $proofOfTransfers->is_public_order = $request->is_public_order;
+        }
+
         assert($amount > 0);
 
         $proofOfTransfers->amount = $amount;
