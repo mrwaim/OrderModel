@@ -45,6 +45,8 @@ use App;
  * @property string $time_transfer
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereDateTransfer($value)
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereTimeTransfer($value)
+ * @property boolean $is_public_order
+ * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\ProofOfTransfer whereIsPublicOrder($value)
  */
 class ProofOfTransfer extends Model
 {

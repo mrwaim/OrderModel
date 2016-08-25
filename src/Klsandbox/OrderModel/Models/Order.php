@@ -194,14 +194,15 @@ class Order extends Model
                 ->Where('order_status_id', '<>', OrderStatus::Rejected()->id)
                 ->Where('order_status_id', '<>', OrderStatus::PaymentUploaded()->id)
                 ->Where('order_status_id', '<>', OrderStatus::Cancelled()->id)
-                ->Where('order_status_id', '<>', OrderStatus::NewOrderStatus()->id);
+                ->Where('order_status_id', '<>', OrderStatus::NewOrderStatus()->id)
+                ->Where('order_status_id', '<>', OrderStatus::Printed()->id);
         });
 
         return $ret;
     }
 
     /**
-     * Returns the order that has status = shipped.
+     * Returns the order that has status = Printed.
      *
      * @param $query
      *
@@ -209,6 +210,18 @@ class Order extends Model
      */
     public static function whereFulfilled($query)
     {
+        return $query->where(function ($q) {
+            $q->where('order_status_id', '=', OrderStatus::Printed()->id)
+                ->whereNull('tracking_id');
+        });
+    }
+
+    /**
+     * Returns the order that has status = Shipped
+     * @param $query
+     * @return mixed
+     */
+    public static function whereShipped($query){
         return $query->where(function ($q) {
             $q->where('order_status_id', '=', OrderStatus::Shipped()->id);
         });
@@ -243,6 +256,11 @@ class Order extends Model
 
     public function canShipState()
     {
-        return $this->order_status_id == OrderStatus::Approved()->id && $this->tracking_id == '';
+        return $this->order_status_id == OrderStatus::Printed()->id && $this->tracking_id == '';
+    }
+
+    public function canPrintState()
+    {
+        return $this->order_status_id < OrderStatus::Printed()->id;
     }
 }
