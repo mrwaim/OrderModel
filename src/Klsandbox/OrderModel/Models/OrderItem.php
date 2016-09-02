@@ -2,6 +2,7 @@
 
 namespace Klsandbox\OrderModel\Models;
 
+use App\Models\OrderItemsUnit;
 use App\Models\Organization;
 use App\Models\User;
 use App\Scopes\OrderItemScope;
@@ -42,6 +43,7 @@ use Klsandbox\BonusModel\Models\BonusStatus;
  * @property integer $product_id
  * @property-read \Klsandbox\OrderModel\Models\Product $product
  * @method static \Illuminate\Database\Query\Builder|\Klsandbox\OrderModel\Models\OrderItem whereProductId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\OrderItemsUnit[] $units
  */
 class OrderItem extends Model
 {
@@ -105,5 +107,10 @@ class OrderItem extends Model
     public function organization()
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    public function units()
+    {
+        return $this->hasMany(OrderItemsUnit::class);
     }
 }
