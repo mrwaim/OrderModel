@@ -93,4 +93,9 @@ class OrderStatus extends Model
     {
         return self::findByName('Cancelled');
     }
+
+    public static function Printed()
+    {
+        return self::findByName('Printed');
+    }
 }
