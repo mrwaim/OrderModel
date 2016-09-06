@@ -249,6 +249,17 @@ class Order extends Model
         return false;
     }
 
+    public function canPrint($auth)
+    {
+        if ($auth->manager || $auth->staff) {
+            if ($this->organization_id == $auth->organization_id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function canApproveState()
     {
         return $this->order_status_id < OrderStatus::Approved()->id;
@@ -261,6 +272,6 @@ class Order extends Model
 
     public function canPrintState()
     {
-        return $this->order_status_id < OrderStatus::Printed()->id;
+        return $this->order_status_id == OrderStatus::Approved()->id;
     }
 }
