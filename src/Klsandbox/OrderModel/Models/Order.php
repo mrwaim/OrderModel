@@ -158,7 +158,10 @@ class Order extends Model
 
     public function isApproved()
     {
-        return $this->order_status_id == OrderStatus::Approved()->id || $this->order_status_id == OrderStatus::Shipped()->id || $this->order_status_id == OrderStatus::Received()->id;
+        return $this->order_status_id == OrderStatus::Approved()->id
+        || $this->order_status_id == OrderStatus::Shipped()->id
+        || $this->order_status_id == OrderStatus::Received()->id
+        || $this->order_status_id == OrderStatus::Printed()->id;
     }
 
     public static function whereApproved($query)
@@ -221,7 +224,8 @@ class Order extends Model
      * @param $query
      * @return mixed
      */
-    public static function whereShipped($query){
+    public static function whereShipped($query)
+    {
         return $query->where(function ($q) {
             $q->where('order_status_id', '=', OrderStatus::Shipped()->id);
         });
