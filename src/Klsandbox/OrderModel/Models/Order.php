@@ -169,6 +169,7 @@ class Order extends Model
         return $query->where(function ($q) {
             $q->where('order_status_id', '=', OrderStatus::Approved()->id)
                 ->orWhere('order_status_id', '=', OrderStatus::Shipped()->id)
+                ->orWhere('order_status_id', '=', OrderStatus::Printed()->id)
                 ->orWhere('order_status_id', '=', OrderStatus::Received()->id);
         });
     }
