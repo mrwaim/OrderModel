@@ -234,35 +234,17 @@ class Order extends Model
 
     public function canApprove($auth)
     {
-        if ($auth->manager) {
-            if ($this->organization_id == $auth->organization_id) {
-                return true;
-            }
-        }
-
-        return false;
+        return $auth->admin;
     }
 
     public function canShip($auth)
     {
-        if ($auth->manager || $auth->staff) {
-            if ($this->organization_id == $auth->organization_id) {
-                return true;
-            }
-        }
-
-        return false;
+        return $auth->admin;
     }
 
     public function canPrint($auth)
     {
-        if ($auth->manager || $auth->staff) {
-            if ($this->organization_id == $auth->organization_id) {
-                return true;
-            }
-        }
-
-        return false;
+        return $auth->admin;
     }
 
     public function canApproveState()
